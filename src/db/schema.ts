@@ -1,4 +1,4 @@
-import { int, mysqlTable, serial, uniqueIndex, varchar, text} from 'drizzle-orm/mysql-core';
+import { int, mysqlTable, serial, uniqueIndex, varchar, text, bigint, foreignKey } from 'drizzle-orm/mysql-core';
 import { sql } from 'drizzle-orm/sql';
 
 export const usersTable = mysqlTable('users', {
@@ -12,11 +12,32 @@ export const roomTable = mysqlTable('room', {
     id: serial().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
     last_message: text(),
-    unread_messages: int()    
+    unread_messages: int()
 });
 export const messageTable = mysqlTable('message', {
-    id:serial().primaryKey(),
-    message:text(),
-    sender_id: int().references(usersTable, "id"),
-
-}),
+    id: serial().primaryKey(),
+    message: text(),
+    sender_id: bigint({ mode: "bigint", unsigned: true }).notNull(),
+    recipient_id: bigint({ mode: "bigint", unsigned: true }).notNull(),
+    roomId: bigint({ mode: "bigint", unsigned: true })
+}, (table) => ({
+    fk: foreignKey({
+        name: "message_sender_id_users_id_fk",
+        columns: [table.sender_id],
+        foreignColumns: [usersTable.id],
+    })
+        .onDelete("cascade")
+        .onUpdate("cascade"),
+    foreignKey: foreignKey({
+        name: "message_recipient_id_users_id_fk",
+        columns: [table.recipient_id],
+        foreignColumns: [usersTable.id],
+    })
+        .onDelete("cascade")
+        .onUpdate("cascade"),
+    foreignKeyy: foreignKey({
+        name: "message_room_id_room_id_fk",
+        columns: [table.roomId],
+        foreignColumns: [roomTable.id],
+    })
+}))
