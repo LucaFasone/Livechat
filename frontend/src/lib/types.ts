@@ -1,9 +1,18 @@
 //imagine this done in C with structs and crazy socket logic
-export type Contact = {
+
+export type Contact  = {
     id: string
     name: string
     lastMessage: string
     unread: number
+}
+
+export type User = {
+    id: number;
+    username: string;
+    email: string;
+    password: string | null;
+    token?: string;
 }
 
 export type Room = {
@@ -19,4 +28,7 @@ export type Message = {
     sender: string
     content: string
     timestamp: string
+}
+export type contextType ={
+    user: User | null 
 }

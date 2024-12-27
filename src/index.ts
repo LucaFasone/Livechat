@@ -9,6 +9,7 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { verifyToken } from './utils/authUtil';
 import { findUserById } from './db/query';
 import { authRouter } from './routes/auth';
+import {profileRouter} from './routes/profile';
 
 const app = express();
 const httpServer = createServer(app);
@@ -48,12 +49,8 @@ app.use(express.json())
 app.use(passport.initialize());
 app.use('/', IndexRouter);
 app.use("/auth", authRouter);
+app.use("/profile", profileRouter);
 
-app.get('/profile', passport.authenticate('bearer', { session: false }), (req, res) => {
-    const user = req.user as User;
-    console.log(user);
-    res.json({ message: `Hello, ${user.username}!` });
-});
 
 httpServer.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
