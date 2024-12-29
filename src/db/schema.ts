@@ -4,9 +4,9 @@ import { sql } from 'drizzle-orm/sql';
 
 export const usersTable = mysqlTable('users', {
     id: serial().primaryKey(),
-    username: varchar({ length: 255 }).notNull().unique(),
+    username: varchar({ length: 255 }).notNull(),
     password: varchar({ length: 255 }).notNull(),
-    email: varchar({ length: 255 }).notNull()
+    email: varchar({ length: 255 }).notNull().unique()
 }, (table) => ({
     emailUniqueIndex: uniqueIndex("emailUniqueIndex").on(sql`(lower(${table.email}))`),
 }));

@@ -3,11 +3,6 @@ import { createRootRoute, createRootRouteWithContext, Outlet } from '@tanstack/r
 
 
 export const Route = createRootRouteWithContext<contextType>()({
-  beforeLoad({ context }) {
-    return {
-      user: {}
-    } as contextType
-  },
   component: () => (
     <>
       <Outlet />

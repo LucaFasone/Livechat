@@ -1,8 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-  loader({ context }) {
-    console.log(context)
+  beforeLoad({ context }) {
+    console.log(localStorage.getItem("user"));
+    if(localStorage.getItem("user") != null) {
+      throw redirect({to: '/chatPage'})
+    }
   },
   component: Index,
 })

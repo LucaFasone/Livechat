@@ -9,7 +9,11 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { verifyToken } from './utils/authUtil';
 import { findUserById } from './db/query';
 import { authRouter } from './routes/auth';
-import {profileRouter} from './routes/profile';
+import { profileRouter } from './routes/profile';
+import cors from 'cors';
+import coockieParser from 'cookie-parser';
+import { generateRefreshTokenFromCookie } from './middleware/getRefreshTokenFromCookie';
+import { createLog } from './middleware/logger';
 
 const app = express();
 const httpServer = createServer(app);
@@ -22,6 +26,9 @@ io.on("connection", (socket: Socket) => {
     })
 });
 
+app.use(coockieParser());
+
+app.use(createLog);
 passport.use(new BearerStrategy(
     async (token: any, done: any) => {
         try {
@@ -47,9 +54,17 @@ passport.use(new BearerStrategy(
 
 app.use(express.json())
 app.use(passport.initialize());
+app.use(cors({
+    origin: 'http://localhost:3000', //public url of the frontend 
+    credentials: true,
+    exposedHeaders: ['Authorization']
+
+}));
+app.use(['/profile'], generateRefreshTokenFromCookie);
 app.use('/', IndexRouter);
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
+
 
 
 httpServer.listen(3000, () => {

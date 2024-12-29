@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { JwtPayload as DefaultJwtPayload } from 'jsonwebtoken';
 //need to use zod not now tho
-
 export type wsMessage = {
     type: string;
     data: any;
@@ -28,7 +27,7 @@ export interface AuthenticatedRequest extends Request {
     user?: User;
 }
 
-
+//sostiure con JwtPayload che ce ora
 interface JwtPayload extends DefaultJwtPayload {
     id: string;
     username: string;
