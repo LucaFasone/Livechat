@@ -1,18 +1,28 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useAuth } from '@/hooks/useAuth';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { useEffect } from 'react';
 
 export const Route = createFileRoute('/')({
-  beforeLoad({ context }) {
-    console.log(localStorage.getItem("user"));
-    if(localStorage.getItem("user") != null) {
-      throw redirect({to: '/chatPage'})
-    }
+  async beforeLoad({ context }) {
+    console.log(context.auth.accessToken)
+
   },
   component: Index,
 })
 
 function Index() {
+  const { login, accessToken } = useAuth()
+  useEffect(() => {
+    login.mutate({ email: 'test', password: 'test' });
+  }, [])
+  useEffect(() => {
+    console.log(accessToken)
+  }, [accessToken])
+
   return (
-    <div>Hello World</div>
+    <div> 
+      <Link to='/login'>Login</Link>
+    </div >
 
   )
 }

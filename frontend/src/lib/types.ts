@@ -1,6 +1,9 @@
 //imagine this done in C with structs and crazy socket logic
 
-export type Contact  = {
+import { useAuth } from "@/hooks/useAuth"
+import { QueryClient, UseMutationResult } from "@tanstack/react-query"
+
+export type Contact = {
     id: string
     name: string
     lastMessage: string
@@ -11,6 +14,7 @@ export type User = {
     id: number;
     username: string;
     email: string;
+    password?: string;
     token?: string;
 }
 
@@ -28,6 +32,27 @@ export type Message = {
     content: string
     timestamp: string
 }
-export type contextType ={
-    user: User | null 
+export interface AuthContext {
+    user: User | null;
+    register: UseMutationResult<any, Error, {
+        username: string;
+        email: string;
+        password: string;
+    }, unknown>;
+    login: UseMutationResult<any, Error, {
+        email: string;
+        password: string;
+    }, unknown>;
+    authenticatedRequest: UseMutationResult<any, Error, {
+        url: string;
+        method: RequestMethod;
+        body?: {};
+    }, unknown>;
+    accessToken: string | null;
 }
+export type contextType = {
+    auth: AuthContext
+    queryClient: QueryClient,
+}
+
+export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'

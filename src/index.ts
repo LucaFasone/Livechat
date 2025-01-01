@@ -55,7 +55,7 @@ passport.use(new BearerStrategy(
 app.use(express.json())
 app.use(passport.initialize());
 app.use(cors({
-    origin: 'http://localhost:3000', //public url of the frontend 
+    origin: 'http://localhost:5173', //public url of the frontend 
     credentials: true,
     exposedHeaders: ['Authorization']
 
