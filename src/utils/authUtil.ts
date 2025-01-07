@@ -10,9 +10,9 @@ const generateToken = (payload: JwtPayload, expiresIn = '1h') => {
     return jwt.sign(payload, secretKey, { expiresIn });
 };
 
-const verifyToken = (token: string) => {
+const verifyToken = (token: string, verifyRefresh = false) => {
     try {
-        return jwt.verify(token, secretKey);
+        return jwt.verify(token, verifyRefresh ? refresKey : secretKey);
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
             throw new Error('Token scaduto');
@@ -33,7 +33,7 @@ const comparePassword = async (password: string, hashedPassword: string): Promis
     const isMatch = await bcrypt.compare(password, hashedPassword);
     return isMatch;
 };
-const generateRefreshToken = async (payload: JwtPayload) => {
+const generateRefreshToken = (payload: JwtPayload) => {
     const refreshToken = jwt.sign(payload, refresKey, { expiresIn: '7d' });
     redisFunctions.saveRefreshToken(payload.id.toString(), refreshToken);
     return refreshToken;

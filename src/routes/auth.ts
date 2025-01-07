@@ -19,7 +19,7 @@ router.post('/register', async (req: Request, res: Response) => {
             user.token = generateToken({ id: user.id, email: user.email });
             user.password = null;
             const refreshToken = await generateRefreshToken({ id: user.id, email: user.email });
-            res.cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "none" });
+            res.cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "none",  });
             res.status(201).json({ message: "User created", user });
         }
     } catch (e) {
@@ -43,8 +43,10 @@ router.post('/login', async (req: Request, res: Response) => {
         user.token = generateToken({ id: user.id, email: user.email });
         user.password = null;
         const refreshToken = await generateRefreshToken({ id: user.id, email: user.email });
-        res.cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "none" });
-
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true, sameSite: "lax", path: "/",
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        });
         res.status(200).json({ message: "User logged in", user });
     } catch (e) {
         console.log(e);

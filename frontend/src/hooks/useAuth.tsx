@@ -1,13 +1,12 @@
 import { RequestMethod, User } from "@/lib/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthContext as AuthContextInterface} from "@/lib/types";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 
 export const AuthContext = createContext<AuthContextInterface | null>(null)
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-    const queryClient = useQueryClient();
+//put the api call in another file
+export function AuthProvider({ children, queryClient }: { children: ReactNode, queryClient: QueryClient }) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const register = useMutation({
@@ -56,6 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         onSuccess(data) {
             setUser(data.user);
             setAccessToken(data.user.token);
+            queryClient.setQueryData(['token'], data.user.token);
+
         },
         onError(error) {
             console.log(error);
@@ -92,6 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         },
     });
+ 
+      
     return (
         <AuthContext.Provider value={{ user, register, login, authenticatedRequest, accessToken }}>
             {children}

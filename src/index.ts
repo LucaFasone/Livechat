@@ -27,10 +27,10 @@ io.on("connection", (socket: Socket) => {
 });
 
 app.use(coockieParser());
-
 app.use(createLog);
 passport.use(new BearerStrategy(
     async (token: any, done: any) => {
+        console.log("passport")
         try {
             const decoded = verifyToken(token);
             if (!decoded || typeof decoded !== 'object') {

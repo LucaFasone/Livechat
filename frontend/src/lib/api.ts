@@ -1,15 +1,21 @@
-export const registerUser = async (data: {username: string, email: string, password: string} ) =>{
-    const response = await fetch('http://localhost:3000/auth/register',{
-        method: 'POST',
+import { QueryClient } from "@tanstack/react-query";
+
+export async function fetchUserProfile(queryClient: QueryClient) {
+  return queryClient.fetchQuery({
+    queryKey: ['me'],
+    queryFn: async () => {
+      const response = await fetch('http://localhost:3000/profile/me', {
         headers: {
-            'Content-Type': 'application/json'
+          'Authorization': `Bearer ${queryClient.getQueryData(['token'])}`,
         },
-        body: JSON.stringify(data)
-    });
-    const json = await response.json();
-    if(response.ok){
-        return json;
-    }else{
-        throw new Error(json.message);
+        credentials: 'include'
+      });
+      if (response.status === 401) {
+        queryClient.setQueryData(['token'], null);
+        throw new Error('Unauthorized');
+      }
+      if (!response.ok) throw new Error('Failed to fetch user');
+      return response.json();
     }
+  });
 }
