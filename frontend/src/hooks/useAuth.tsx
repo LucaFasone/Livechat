@@ -1,6 +1,6 @@
 import { RequestMethod, User } from "@/lib/types";
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AuthContext as AuthContextInterface} from "@/lib/types";
+import { AuthContext as AuthContextInterface } from "@/lib/types";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 
@@ -10,30 +10,37 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode, q
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const register = useMutation({
-        mutationFn: async (data: { username: string, email: string, password: string }) => {
-            const response = await fetch('http://localhost:3000/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify(data)
-            });
-            const json = await response.json();
-            if (response.ok) {
-                return json;
-            } else {
-                throw new Error(json.message);
+        mutationFn: async (data: { username: string, email: string, password: string, confirmPassword: string }) => {
+            if (data.password === data.confirmPassword) {
+                const response = await fetch('http://localhost:3000/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                const json = await response.json();
+                if (response.ok) {
+                    setUser(json.user);
+                    setAccessToken(json.user.token);
+                    return json;
+                } else {
+                    throw new Error(json.message);
+                }
+            }else{
+                throw new Error('Passwords do not match');
             }
         },
         onSuccess(data) {
             setUser(data.user);
             setAccessToken(data.user.token);
+            return data;
         },
         onError(error) {
-            console.log(error);
+            return error;
         },
-    
+
     })
     const login = useMutation({
         mutationFn: async (data: { email: string, password: string }) => {
@@ -93,18 +100,18 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode, q
 
         },
     });
- 
-      
+
+
     return (
-        <AuthContext.Provider value={{ user, register, login, authenticatedRequest, accessToken }}>
+        <AuthContext.Provider value={{ user, register, login, authenticatedRequest, accessToken } as AuthContextInterface}>
             {children}
         </AuthContext.Provider>
     )
 }
 
-export function useAuth(){
+export function useAuth() {
     const context = useContext(AuthContext);
-    if(!context){
+    if (!context) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
     return context;

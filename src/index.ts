@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { router as IndexRouter } from './routes/index';
-import { User, wsMessage, wsMessageAck } from './types';
+import { JwtData, User, WsMessage, WsMessageAck } from './types';
 import passport from 'passport';
 import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { verifyToken } from './utils/authUtil';
@@ -20,7 +20,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: [] } });
 
 io.on("connection", (socket: Socket) => {
-    socket.on("message", (msg: wsMessage, ack: wsMessageAck) => {
+    socket.on("message", (msg: WsMessage, ack: WsMessageAck) => {
         console.log("message", msg);
         ack("OK");
     })
@@ -32,7 +32,7 @@ passport.use(new BearerStrategy(
     async (token: any, done: any) => {
         console.log("passport")
         try {
-            const decoded = verifyToken(token);
+            const decoded = verifyToken(token) as JwtData;
             if (!decoded || typeof decoded !== 'object') {
                 return done(null, false, { message: 'Token non valido' });
             }
@@ -40,7 +40,7 @@ passport.use(new BearerStrategy(
             if (!userId) {
                 return done(null, false, { message: 'Token non contiene un ID valido' });
             }
-            const user = await findUserById(userId);
+            const user = await findUserById(Number(userId));
             if (!user) {
                 return done(null, false, { message: 'Utente non trovato' });
             }

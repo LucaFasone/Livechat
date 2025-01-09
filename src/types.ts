@@ -1,34 +1,47 @@
 import { Request } from 'express';
 import { JwtPayload as DefaultJwtPayload } from 'jsonwebtoken';
-//need to use zod 
-export type wsMessage = {
-    type: string;
-    data: any;
-    roomId?: number | string;
-    userId?: number | string;
-}
-export type wsMessageAck = (status: "OK" | "NOT OK") => void
+import { z } from "zod";
 
-export type User = {
-    id: number;
-    username: string;
-    email: string;
-    password: string | null;
-    token?: string;
-}
+export const WsMessageSchema = z.object({
+    type: z.string(),
+    data: z.any(),
+    roomId: z.union([z.string(), z.number()]).optional(),
+    userId: z.union([z.string(), z.number()]).optional(),
+});
 
-export type UserRegistration = {
-    username: string;
-    email: string;
-    password: string; 
-};
+
+export const WsMessageAckSchema = z.function()
+    .args(z.enum(["OK", "NOT OK"]))
+    .returns(z.void());
+
+
+
+export const UserSchema = z.object({
+    id: z.number(),
+    username: z.string(),
+    email: z.string().email(),
+    password: z.string().nullable(),
+    token: z.string().optional(),
+});
+
+
+export const UserRegistrationSchema = z.object({
+    username: z.string().min(3, "Il nome utente deve avere almeno 3 caratteri"),
+    email: z.string().email("Email non valida"),
+    password: z.string().min(6, "La password deve avere almeno 6 caratteri"),
+});
 
 export interface AuthenticatedRequest extends Request {
     user?: User;
 }
 
-//sostiure con JwtPayload che ce ora
 export interface JwtData extends DefaultJwtPayload {
     id: string;
     email: string;
 }
+
+export type WsMessage = z.infer<typeof WsMessageSchema>;
+export type WsMessageAck = z.infer<typeof WsMessageAckSchema>;
+export type User = z.infer<typeof UserSchema>;
+
+
