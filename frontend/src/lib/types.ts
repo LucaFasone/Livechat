@@ -9,12 +9,16 @@ const ContactSchema = z.object({
     lastMessage: z.string(),
     unread: z.number().nonnegative(),
 });
-
-const UserSchema = z.object({
-    id: z.number().positive(),
+export const RegisterSchema = z.object({
     username: z.string().min(3, "Il nome utente deve essere lungo almeno 3 caratteri"),
     email: z.string().email("Email non valida"),
-    password: z.string().min(8, "La password deve essere lunga almeno 8 caratteri").optional(),
+    password: z.string().min(2, "La password deve essere lunga almeno 8 caratteri"),
+
+})
+const UserSchema = z.object({
+    id: z.number().positive(),
+    username: z.string().min(3),
+    email: z.string().email("Email non valida"),
     token: z.string().optional(),
 });
 
@@ -36,11 +40,12 @@ const MessageSchema = z.object({
 export type Email = z.infer<typeof UserSchema>['email'];
 
 export interface AuthContext {
-    user: z.infer<typeof UserSchema> | null;  
+    user: z.infer<typeof UserSchema> | null;
     register: UseMutationResult<any, Error, {
-        username: z.infer<typeof UserSchema>['username'] | null;
-        email: Email | null
-        password: z.infer<typeof UserSchema>['password'] | null;
+        username: z.infer<typeof RegisterSchema>['username']
+        email: Email
+        password: z.infer<typeof RegisterSchema>['password'];
+        confirmPassword: z.infer<typeof RegisterSchema>['password'];
     }, unknown>;
     login: UseMutationResult<any, Error, {
         email: Email;

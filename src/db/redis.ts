@@ -25,7 +25,7 @@ export const redisFunctions = {
       await redisClient.set(userId, refreshToken, { EX: 7 * 24 * 60 * 60 });
       console.log(`Refresh token salvato per userId: ${userId}`);
     } catch (error) {
-      console.error(`Errore nel salvataggio del refresh token per userId: ${userId}`, error);
+      console.error(`Errore nel salvataggio del refresh token per userId: ${userId}`, error); 
       throw new Error('Errore nella comunicazione con Redis');
     }
   },

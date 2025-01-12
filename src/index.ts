@@ -14,7 +14,6 @@ import cors from 'cors';
 import coockieParser from 'cookie-parser';
 import { generateRefreshTokenFromCookie } from './middleware/getRefreshTokenFromCookie';
 import { createLog } from './middleware/logger';
-
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: [] } });
@@ -29,10 +28,14 @@ io.on("connection", (socket: Socket) => {
 app.use(coockieParser());
 app.use(createLog);
 passport.use(new BearerStrategy(
-    async (token: any, done: any) => {
+    { passReqToCallback: true },
+    async (req: Express.Request, token: any, done: any) => {
         console.log("passport")
         try {
-            const decoded = verifyToken(token) as JwtData;
+            const actualToken = req.newAccessToken || token;
+            const decoded = verifyToken(actualToken) as JwtData;
+            console.log("decoded", decoded);
+            
             if (!decoded || typeof decoded !== 'object') {
                 return done(null, false, { message: 'Token non valido' });
             }

@@ -1,7 +1,8 @@
-import { RequestMethod, User } from "@/lib/types";
+import { RegisterSchema, RequestMethod, User} from "@/lib/types";
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthContext as AuthContextInterface } from "@/lib/types";
 import { createContext, ReactNode, useContext, useState } from "react";
+import { z } from "zod";
 
 
 export const AuthContext = createContext<AuthContextInterface | null>(null)
@@ -11,7 +12,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode, q
     const [user, setUser] = useState<User | null>(null);
     const register = useMutation({
         mutationFn: async (data: { username: string, email: string, password: string, confirmPassword: string }) => {
-            if (data.password === data.confirmPassword) {
+            if (data.password === data.confirmPassword) {             
                 const response = await fetch('http://localhost:3000/auth/register', {
                     method: 'POST',
                     headers: {
@@ -28,13 +29,14 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode, q
                 } else {
                     throw new Error(json.message);
                 }
-            }else{
+            } else {
                 throw new Error('Passwords do not match');
             }
         },
         onSuccess(data) {
             setUser(data.user);
             setAccessToken(data.user.token);
+            queryClient.setQueryData(['token'], data.user.token);
             return data;
         },
         onError(error) {
@@ -58,7 +60,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode, q
             } else {
                 throw new Error(json.message);
             }
-        },
+        },  
         onSuccess(data) {
             setUser(data.user);
             setAccessToken(data.user.token);
@@ -66,7 +68,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode, q
 
         },
         onError(error) {
-            console.log(error);
+            return error
         },
     })
     const authenticatedRequest = useMutation({

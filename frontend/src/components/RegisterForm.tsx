@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { AuthContext } from '@/lib/types'
-import { redirect } from '@tanstack/react-router'
+import { AuthContext, RegisterSchema } from '@/lib/types'
+import { useNavigate } from '@tanstack/react-router'
+import { z } from 'zod'
 //TODO: Use tanstack form (dunno if i will do or not)
 //TODO: IMPORTANT: use zod to validate input
 export default function RegisterForm({ registerFunction }: { registerFunction: AuthContext["register"] }) {
@@ -10,24 +11,39 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-    const [error, setError] = useState("")
+    const [error, setError] = useState('')
+    const { isSuccess, isError } = registerFunction;
+    const navigate = useNavigate();
+
 
     const handleSubmit = (e: React.FormEvent) => {
-        const { isSuccess, isError, error } = registerFunction;
         e.preventDefault()
         try {
-            registerFunction.mutateAsync({ username: name, email, password, confirmPassword })
-            if (isSuccess) {
-                throw redirect({ to: '/login' })
+            const parsedData = RegisterSchema.parse({ username: name, email, password })
+            registerFunction.mutate({ ...parsedData, confirmPassword })
+
+        } catch (e) {
+            if (e instanceof z.ZodError) {
+                setError(e.errors[0].message)
             }
-
-        } catch (e: any) {
-            setError(e.message)
-
         }
-
     }
+    useEffect(() => {
+        if (isSuccess) {
+            console.log('Success', registerFunction.data);
+            try {
+                navigate({to: '/chatPage'})
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }, [isSuccess])
 
+    useEffect(() => {
+        if (isError) {
+            setError(registerFunction.error.message)
+        }
+    }, [isError])
 
     return (
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -43,7 +59,7 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
                         className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         placeholder="Nome completo"
                         value={name}
-                        onChange={(e) => { setName(e.target.value); setError('') }}
+                        onChange={(e) => { setName(e.target.value) }}
                     />
                 </div>
                 <div>
@@ -57,7 +73,7 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
                         className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         placeholder="Indirizzo Email"
                         value={email}
-                        onChange={(e) => { setEmail(e.target.value); setError('') }}
+                        onChange={(e) => { setEmail(e.target.value); }}
                     />
                 </div>
                 <div>
@@ -71,7 +87,7 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
                         className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         placeholder="Password"
                         value={password}
-                        onChange={(e) => { setPassword(e.target.value); setError('') }}
+                        onChange={(e) => { setPassword(e.target.value); }}
                     />
                 </div>
                 <div>
@@ -85,11 +101,11 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
                         className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         placeholder="Conferma Password"
                         value={confirmPassword}
-                        onChange={(e) => { setConfirmPassword(e.target.value); setError('') }}
+                        onChange={(e) => { setConfirmPassword(e.target.value); }}
                     />
                 </div>
             </div>
-            {error || registerFunction.isError && <p className="text-red-500 text-sm">{error || registerFunction.error.message}</p>}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <div>
                 <Button
                     type="submit"
