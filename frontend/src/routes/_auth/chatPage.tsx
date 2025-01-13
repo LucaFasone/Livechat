@@ -1,14 +1,9 @@
-import { fetchUserProfile } from '@/lib/api';
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/chatPage')({
   async beforeLoad({ context }) {
-    const { data, isLoading, error } = await fetchUserProfile(context.queryClient);
-    console.log(data)
-    console.log(isLoading)
-    console.log(error)
-
-
+    
+    console.log(context.user)
   },
-  component: () => <div>Hello /_auth/chatPage!</div>,
+  component: () => <div>Hello /_auth/chatpage!</div>,
 })

@@ -15,7 +15,7 @@ export const RegisterSchema = z.object({
     password: z.string().min(2, "La password deve essere lunga almeno 8 caratteri"),
 
 })
-const UserSchema = z.object({
+export const UserSchema = z.object({
     id: z.number().positive(),
     username: z.string().min(3),
     email: z.string().email("Email non valida"),
@@ -62,6 +62,7 @@ export interface AuthContext {
 export type contextType = {
     auth: AuthContext
     queryClient: QueryClient,
+    user: User | null
 }
 export type User = z.infer<typeof UserSchema>
 export type Contact = z.infer<typeof ContactSchema>

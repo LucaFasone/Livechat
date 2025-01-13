@@ -6,8 +6,6 @@ const router = express.Router();
 
 router.get('/me', passport.authenticate('bearer', { session: false }), (req, res) => {
     console.log("profile")
-    console.log(req.headers);
-    res.status(200).send()
+    res.status(200).json((req.user as User));
 });
-
 export { router as profileRouter };

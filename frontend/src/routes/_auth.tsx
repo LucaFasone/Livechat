@@ -1,8 +1,17 @@
+import { fetchUserProfile } from '@/lib/api'
+import { User, UserSchema } from '@/lib/types'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth')({
-  beforeLoad({ context }) {
-    
+  async beforeLoad({ context }) {
+    try {
+      const user = await fetchUserProfile(context.queryClient) as User
+      context.user = user
+      return context
+    } catch (e) {
+      context.user = null
+      return redirect({ to: '/login' })
+    }
   },
   component: () => <div>Hello /_auth!</div>,
 })

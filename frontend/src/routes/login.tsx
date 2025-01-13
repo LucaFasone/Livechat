@@ -1,9 +1,21 @@
 import LoginForm from '@/components/LoginForm'
 import Logo from '@/components/Logo'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { fetchUserProfile } from '@/lib/api'
+import { User } from '@/lib/types'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/login')({
   component: Login,
+  //easy solution
+   async beforeLoad({ context }) {
+      try {
+        const user = await fetchUserProfile(context.queryClient) as User
+        context.user = user
+        return redirect({to: "/chatPage"})
+      } catch (e) {
+        context.user = null
+      }
+    }
 })
 
 function Login(){
