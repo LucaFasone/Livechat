@@ -30,27 +30,25 @@ app.use(createLog);
 passport.use(new BearerStrategy(
     { passReqToCallback: true },
     async (req: Express.Request, token: any, done: any) => {
-        console.log("passport")
         try {
             const actualToken = req.newAccessToken || token;
             const decoded = verifyToken(actualToken) as JwtData;
-            console.log("decoded", decoded);
             
             if (!decoded || typeof decoded !== 'object') {
                 return done(null, false, { message: 'Token non valido' });
             }
             const userId = decoded.id;
             if (!userId) {
-                return done(null, false, { message: 'Token non contiene un ID valido' });
+                return done(new Error('Token non contiene un ID valido'), false);
             }
             const user = await findUserById(Number(userId));
-            if (!user) {
-                return done(null, false, { message: 'Utente non trovato' });
+            if (user === null) {                
+                return done(new Error("Utete non trovato"), false);
             }
             return done(null, user);
         } catch (error) {
             console.error('Errore nella strategia Bearer:', error);
-            return done(null, false, { message: 'Errore nella verifica del token' });
+            return done(error, false);
         }
     })
 );

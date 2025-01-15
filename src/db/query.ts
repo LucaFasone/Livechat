@@ -1,5 +1,5 @@
 import { db } from "."
-import { User, UserSchema } from "../types"
+import { User, UserWithoutPassword } from "../types"
 import { usersTable } from "./schema"
 import { eq } from "drizzle-orm"
 
@@ -9,16 +9,16 @@ export const findUserByEmail = async (email: string) => {
 
 }
 export const findUserById = async (id: number) => {
-    try {
-        const user = await db.select().from(usersTable).where(eq(usersTable.id, id)).then((res) => res[0])
-        const validatedUser = UserSchema.parse(user)
-        delete validatedUser.password
-        return validatedUser
-    }
-    catch (err) {
-        console.log(err)
-        throw new Error("Error while fetching user")
-    }
+    const user = await db.select().from(usersTable)
+    .where(eq(usersTable.id, id))
+    .then((res) => {
+        if (!res || res.length === 0) {
+          return null;
+        }
+        const { email, username, id } = res[0];
+        return { email, username, id } as UserWithoutPassword;
+      });
+    return user
 }
 export const createUser = async (username: string, password: string, email: string) => {
     const [result] = await db.insert(usersTable).values({ username, password, email })

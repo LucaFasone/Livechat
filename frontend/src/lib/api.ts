@@ -19,7 +19,7 @@ export async function fetchUserProfile(queryClient: QueryClient) {
         const data = await response.json();        
         return data;
       }catch(e){
-        console.error(e);
+       
         throw new Error('Failed to fetch user');
       }
     

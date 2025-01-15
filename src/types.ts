@@ -14,8 +14,6 @@ export const WsMessageAckSchema = z.function()
     .args(z.enum(["OK", "NOT OK"]))
     .returns(z.void());
 
-
-
 export const UserSchema = z.object({
     id: z.number(),
     username: z.string(),
@@ -31,9 +29,7 @@ export const UserRegistrationSchema = z.object({
     password: z.string().min(2, "La password deve avere almeno 6 caratteri"),
 });
 
-export interface AuthenticatedRequest extends Request {
-    user?: User;
-}
+
 
 export interface JwtData extends DefaultJwtPayload {
     id: string;
@@ -44,5 +40,6 @@ export type WsMessage = z.infer<typeof WsMessageSchema>;
 export type WsMessageAck = z.infer<typeof WsMessageAckSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type UserRegistration = z.infer<typeof UserRegistrationSchema>;
+export type UserWithoutPassword = Omit<z.infer<typeof UserSchema>, 'password'>;
 
 

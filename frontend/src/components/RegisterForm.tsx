@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input"
 import { AuthContext, RegisterSchema } from '@/lib/types'
 import { useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
-//TODO: Use tanstack form (dunno if i will do or not)
 //TODO: IMPORTANT: use zod to validate input
 export default function RegisterForm({ registerFunction }: { registerFunction: AuthContext["register"] }) {
     const [name, setName] = useState('')
@@ -14,7 +13,6 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
     const [error, setError] = useState('')
     const { isSuccess, isError } = registerFunction;
     const navigate = useNavigate();
-
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -32,7 +30,7 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
         if (isSuccess) {
             console.log('Success', registerFunction.data);
             try {
-                navigate({to: '/chatPage'})
+                navigate({ to: '/chatPage' })
             } catch (e) {
                 console.log(e)
             }

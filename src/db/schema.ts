@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { int, mysqlTable, serial, uniqueIndex, varchar, text, bigint, foreignKey } from 'drizzle-orm/mysql-core';
 import { sql } from 'drizzle-orm/sql';
-
+//i should use zod to extract the types from the schema BUT i m too lazy 
 export const usersTable = mysqlTable('users', {
     id: serial().primaryKey(),
     username: varchar({ length: 255 }).notNull(),
