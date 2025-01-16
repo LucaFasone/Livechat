@@ -1,19 +1,18 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { Socket } from 'socket.io';
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { router as IndexRouter } from './routes/index';
-import { JwtData, User, WsMessage, WsMessageAck } from './types';
+import { WsMessage, WsMessageAck } from './types';
 import passport from 'passport';
-import { Strategy as BearerStrategy } from 'passport-http-bearer';
-import { verifyToken } from './utils/authUtil';
-import { findUserById } from './db/query';
 import { authRouter } from './routes/auth';
 import { profileRouter } from './routes/profile';
 import cors from 'cors';
 import coockieParser from 'cookie-parser';
 import { generateRefreshTokenFromCookie } from './middleware/getRefreshTokenFromCookie';
 import { createLog } from './middleware/logger';
+import { bearerStrategy } from './middleware/Passport';
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: [] } });
@@ -27,31 +26,7 @@ io.on("connection", (socket: Socket) => {
 
 app.use(coockieParser());
 app.use(createLog);
-passport.use(new BearerStrategy(
-    { passReqToCallback: true },
-    async (req: Express.Request, token: any, done: any) => {
-        try {
-            const actualToken = req.newAccessToken || token;
-            const decoded = verifyToken(actualToken) as JwtData;
-            
-            if (!decoded || typeof decoded !== 'object') {
-                return done(null, false, { message: 'Token non valido' });
-            }
-            const userId = decoded.id;
-            if (!userId) {
-                return done(new Error('Token non contiene un ID valido'), false);
-            }
-            const user = await findUserById(Number(userId));
-            if (user === null) {                
-                return done(new Error("Utete non trovato"), false);
-            }
-            return done(null, user);
-        } catch (error) {
-            console.error('Errore nella strategia Bearer:', error);
-            return done(error, false);
-        }
-    })
-);
+passport.use(bearerStrategy);
 
 app.use(express.json())
 app.use(passport.initialize());

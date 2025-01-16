@@ -41,7 +41,7 @@ const generateRefreshToken =  (payload: JwtPayload) => {
     redisFunctions.saveRefreshToken(payload.id.toString(), refreshToken).catch(console.error); //fire and forget ig
     return refreshToken;
 }
-const setRefreshTokenCookie = (res: Response, payload: JwtData ) => {
+const setRefreshTokenCookie = (res: Response, payload: JwtData ): string => {
     const refreshToken = generateRefreshToken(payload);
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -49,6 +49,12 @@ const setRefreshTokenCookie = (res: Response, payload: JwtData ) => {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     });
+    return refreshToken;
 };
-export { generateToken, verifyToken, hashPassword, comparePassword, generateRefreshToken, setRefreshTokenCookie };
+
+const logout = (id: Number,res:Response) => {
+    redisFunctions.deleteRefreshToken(id.toString()).catch(console.error);
+    res.clearCookie("refreshToken");
+};
+export { generateToken, verifyToken, hashPassword, comparePassword, generateRefreshToken, setRefreshTokenCookie, logout };
 

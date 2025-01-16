@@ -12,7 +12,7 @@ export const redisFunctions = {
   getRefreshToken: async (userId: string) => {
     try {
       const refreshToken = await redisClient.get(userId.toString());
-      return refreshToken ?? null;
+      return refreshToken !== null
     } catch (error) {
       console.error(`Errore nel recupero del refresh token per userId: ${userId}`, error);
       throw new Error('Errore nella comunicazione con Redis');

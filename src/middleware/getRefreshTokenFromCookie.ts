@@ -1,9 +1,10 @@
 import type { RequestHandler } from 'express';
-import { generateRefreshToken, generateToken, verifyToken } from '../utils/authUtil';
+import {generateToken, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
 import { JwtData } from '../types';
+import { redisFunctions } from '../db/redis';
 export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
     try {
+        const token = req.headers['authorization']?.split(' ')[1];
         if (token === undefined) {
             throw new Error("Token non presente");
         }
@@ -13,19 +14,15 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
         const refreshToken = req.cookies['refreshToken'] as string;
         try {
             const decodedRefreshToken = verifyToken(refreshToken, true) as JwtData;
-            if (!decodedRefreshToken || typeof decodedRefreshToken !== "object") {
+            const isRefreshTokenValid = await redisFunctions.getRefreshToken(decodedRefreshToken.id.toString());
+            console.log(isRefreshTokenValid);
+            if (!decodedRefreshToken || typeof decodedRefreshToken !== "object" || !isRefreshTokenValid) {
                 res.status(401).json({ message: 'Refresh token non valido' });
                 return;
             }
-            const {id, email} = decodedRefreshToken;
-            const newToken =  generateToken({ id, email });
-            const newRefreshToken = generateRefreshToken({ id, email });
-            console.log("On middlewere:",newToken);
-            res.cookie("refreshToken", newRefreshToken, {
-                httpOnly: true, sameSite: "lax", path: "/",
-                expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-            });
-            req.newAccessToken = newToken;
+            const { id, email } = decodedRefreshToken;
+            setRefreshTokenCookie(res, { id: id.toString(), email });
+            req.newAccessToken = generateToken({ id: id.toString(), email });
             next();
         } catch (err) {
             const error = err instanceof Error ? err : new Error('Errore nella verifica del token');

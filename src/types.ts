@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import { JwtPayload as DefaultJwtPayload } from 'jsonwebtoken';
 import { z } from "zod";
 
@@ -30,9 +29,8 @@ export const UserRegistrationSchema = z.object({
 });
 
 
-
 export interface JwtData extends DefaultJwtPayload {
-    id: string;
+    id: string; // should be a number
     email: string;
 }
 
