@@ -42,7 +42,6 @@ function Index() {
         </div>
         <RegisterForm
           registerFunction={auth.register}
-
         />
       </div>
     </div>

@@ -13,5 +13,5 @@ export const Route = createFileRoute('/_auth')({
       return redirect({ to: '/login' })
     }
   },
-  component: () => <div>Hello /_auth!</div>,
+
 })

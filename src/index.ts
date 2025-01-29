@@ -11,7 +11,7 @@ import cors from 'cors';
 import coockieParser from 'cookie-parser';
 import { generateRefreshTokenFromCookie } from './middleware/getRefreshTokenFromCookie';
 import { createLog } from './middleware/logger';
-import { bearerStrategy } from './middleware/Passport';
+import { bearerStrategy } from './middleware/passport';
 
 const app = express();
 const httpServer = createServer(app);

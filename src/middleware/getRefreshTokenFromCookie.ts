@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import {generateToken, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
+import {generateToken, logout, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
 import { JwtData } from '../types';
 import { redisFunctions } from '../db/redis';
 export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, next) => {

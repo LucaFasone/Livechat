@@ -12,6 +12,7 @@ router.get('/me', passport.authenticate('bearer', { session: false }), (req: Req
     console.log(user);
     res.status(200).json(user);
 }, (err: Error, req: Request, res: Response, _: NextFunction): void => {
+    res.clearCookie("refreshToken");
     res.status(401).json({ message: err.message });
 }
 );
