@@ -1,7 +1,6 @@
 import LoginForm from '@/components/LoginForm'
 import Logo from '@/components/Logo'
 import { fetchUserProfile } from '@/lib/api'
-import { User } from '@/lib/types'
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/login')({
@@ -9,9 +8,9 @@ export const Route = createFileRoute('/login')({
   //easy solution
    async beforeLoad({ context }) {
       try {
-        const user = await fetchUserProfile(context.queryClient) as User
+        const user = await fetchUserProfile(context.queryClient) 
         context.user = user
-        return redirect({to: "/chatPage"})
+        return redirect({to: "/"})
       } catch (e) {
         context.user = null
       }

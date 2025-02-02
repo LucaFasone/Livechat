@@ -1,7 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
-//pensa di spotare le cose relative a queryClient sotto
+import { User } from "./types";
+//pensa di spotare le cose relative a queryClient alla fine del file
 export async function fetchUserProfile(queryClient: QueryClient) {
-  return queryClient.fetchQuery({
+  return queryClient.fetchQuery<User>({
     queryKey: ['me'],
     queryFn: async () => {
       try{

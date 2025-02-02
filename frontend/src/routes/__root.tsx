@@ -9,10 +9,10 @@ export const Route = createRootRouteWithContext<contextType>()({
         try {
           const user = await fetchUserProfile(context.queryClient) as User
           context.user = user
-          redirect({to: "/chatPage"})
+          redirect({to: "/"})
         } catch (e) {
           context.user = null
-          redirect({to: "/"})
+          redirect({to: "/register"})
 
         }
       },
