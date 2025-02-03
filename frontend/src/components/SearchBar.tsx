@@ -1,6 +1,4 @@
-import React from 'react'
 import { Input } from './ui/input'
-
 function SearchBar() {
     return (
         <div className="p-4">

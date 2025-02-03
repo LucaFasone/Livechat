@@ -6,6 +6,7 @@ export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 const ContactSchema = z.object({
     id: z.number().positive(),
     name: z.string(),
+    lastSeen: z.string().datetime().transform((d) => new Date(d)),
     lastMessage: z.string(),
     image: z.string().optional(),
     unread: z.number().nonnegative().optional(),
