@@ -4,10 +4,11 @@ import { z } from "zod";
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
 const ContactSchema = z.object({
-    id: z.string(),
+    id: z.number().positive(),
     name: z.string(),
     lastMessage: z.string(),
-    unread: z.number().nonnegative(),
+    image: z.string().optional(),
+    unread: z.number().nonnegative().optional(),
 });
 export const RegisterSchema = z.object({
     username: z.string().min(3, "Il nome utente deve essere lungo almeno 3 caratteri"),
