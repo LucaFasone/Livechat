@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createUser, findUserByEmail } from '../db/query';
 import { User, UserRegistration, UserRegistrationSchema } from '../types';
 import { comparePassword, generateRefreshToken, generateToken, hashPassword, setRefreshTokenCookie } from '../utils/authUtil';
+import { ZodError } from 'zod';
 const router = express.Router();
 
 router.post('/register', async (req: Request, res: Response) => {
@@ -49,11 +50,25 @@ router.post('/login', async (req: Request, res: Response) => {
         setRefreshTokenCookie(res, { id: user.id.toString(), email: user.email });
         delete user.password;
         res.status(200).json({ message: "User logged in", user });
-        
+
     } catch (e) {
         console.log(e);
         res.status(500).json({ message: "Internal server error" });
     }
 });
+router.post("/resetpassword", async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body
+        UserRegistrationSchema.pick({ email: true }).parse({ email })
+        
+        
+        res.status(200).json({ message: "Reset password" })
 
+    } catch (e) {
+        e instanceof ZodError && res.status(400).json(e.errors[0].message);
+        e instanceof Error && res.status(500).json(e.message);
+    }
+
+
+});
 export { router as authRouter };

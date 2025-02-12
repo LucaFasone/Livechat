@@ -1,22 +1,20 @@
 import Logo from '@/components/Logo'
-import RegisterForm from '@/components/RegisterForm'
-import { useAuth } from '@/hooks/useAuth'
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { ResetPasswordForm } from '@/components/ResetPassword'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/register')({
-  component: Index,
+export const Route = createFileRoute('/resetpassword')({
+  component: ResetPassword
+})
 
-  })
 
-function Index() {
-  const auth = useAuth()
+function ResetPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
         <div className="text-center">
           <Logo size={100} className="mx-auto mb-4" />
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Crea il tuo account
+            Reimposta password
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Oppure{' '}
@@ -28,8 +26,8 @@ function Index() {
             </Link>
           </p>
         </div>
-        <RegisterForm registerFunction={auth.register} />
+        <ResetPasswordForm />
       </div>
-    </div>
+    </div >
   )
 }

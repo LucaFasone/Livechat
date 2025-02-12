@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Link } from '@tanstack/react-router'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -46,9 +47,9 @@ export default function LoginForm() {
 
       <div className="flex">
         <div className="text-sm">
-          <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-            Password dimenticata?
-          </a>
+          <Link to="/resetpassword" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Password dimenticata?   
+          </Link>
         </div>
       </div>
 

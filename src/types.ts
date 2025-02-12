@@ -19,7 +19,7 @@ export const UserSchema = z.object({
     email: z.string().email(),
     password: z.string().optional(),
     token: z.string().optional(),
-});``
+});
 
 
 export const UserRegistrationSchema = z.object({

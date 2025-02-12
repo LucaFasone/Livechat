@@ -13,7 +13,6 @@ export const Route = createRootRouteWithContext<contextType>()({
         } catch (e) {
           context.user = null
           redirect({to: "/register"})
-
         }
       },
   component: () => (

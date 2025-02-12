@@ -28,9 +28,8 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
     }
     useEffect(() => {
         if (isSuccess) {
-            console.log('Success', registerFunction.data);
             try {
-                navigate({ to: '/chatPage' })
+                navigate({ to: '/' })
             } catch (e) {
                 console.log(e)
             }
@@ -62,7 +61,7 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
                 </div>
                 <div>
                     <label htmlFor="email-address" className="sr-only">Indirizzo Email</label>
-                    <Input
+                 <Input
                         id="email-address"
                         name="email"
                         type="email"

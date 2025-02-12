@@ -5,16 +5,7 @@ import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/login')({
   component: Login,
-  //easy solution
-   async beforeLoad({ context }) {
-      try {
-        const user = await fetchUserProfile(context.queryClient) 
-        context.user = user
-        return redirect({to: "/"})
-      } catch (e) {
-        context.user = null
-      }
-    }
+   
 })
 
 function Login(){
@@ -31,7 +22,7 @@ function Login(){
         </h2>
         <p className="mt-2 text-sm text-gray-600">
           Oppure{' '}
-          <Link to='/' className="font-medium text-indigo-600 hover:text-indigo-500">
+          <Link to='/register' className="font-medium text-indigo-600 hover:text-indigo-500">
             Registrati se non hai un account
           </Link>
         </p>
