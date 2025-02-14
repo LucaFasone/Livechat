@@ -12,7 +12,6 @@ import coockieParser from 'cookie-parser';
 import { generateRefreshTokenFromCookie } from './middleware/getRefreshTokenFromCookie';
 import { createLog } from './middleware/logger';
 import { bearerStrategy } from './middleware/passport';
-import { oauth2Client, sendEmail } from './api/sendEmail';
 
 const app = express();
 const httpServer = createServer(app);
@@ -42,22 +41,7 @@ app.use('/', IndexRouter);
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 
-app.get("/email", async (req, res) => {
-    await sendEmail();
-    res.send("Hello World")
-});
 
-app.get('/auth/google/callback', async (req, res) => {
-    const code = req.query.code;
-    try {
-        const { tokens } = await oauth2Client.getToken(code as string);
-        oauth2Client.setCredentials(tokens);
-        res.send('Authorization successful!');
-    } catch (error) {
-        console.error('Error during authentication:', error);
-        res.send('Authentication failed!');
-    }
-});
 
 httpServer.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
