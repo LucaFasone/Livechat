@@ -34,10 +34,16 @@ export interface JwtData extends DefaultJwtPayload {
     email: string;
 }
 
+export type EmailTemplate = {
+    from: string;
+    to: string;
+    subject: string;
+    text: string;
+    html: string;
+}
+
 export type WsMessage = z.infer<typeof WsMessageSchema>;
 export type WsMessageAck = z.infer<typeof WsMessageAckSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type UserRegistration = z.infer<typeof UserRegistrationSchema>;
 export type UserWithoutPassword = Omit<z.infer<typeof UserSchema>, 'password'>;
-
-

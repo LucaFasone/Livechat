@@ -1,11 +1,11 @@
 import Logo from '@/components/Logo'
 import { ResetPasswordForm } from '@/components/ResetPassword'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link} from '@tanstack/react-router'
 
 export const Route = createFileRoute('/resetpassword')({
-  component: ResetPassword
+  component: ResetPassword,
+  
 })
-
 
 function ResetPassword() {
   return (
@@ -20,14 +20,13 @@ function ResetPassword() {
             Oppure{' '}
             <Link
               to="/login"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
+              className="font-medium text-indigo-600 hover:text-indigo-500">
               Accedi se hai già un account
             </Link>
           </p>
         </div>
         <ResetPasswordForm />
       </div>
-    </div >
+    </div>
   )
 }

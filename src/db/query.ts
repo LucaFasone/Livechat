@@ -4,9 +4,8 @@ import { usersTable } from "./schema"
 import { eq } from "drizzle-orm"
 
 export const findUserByEmail = async (email: string)=> {
-    //SELECET  only email username and id
     const user = await db.select({email:usersTable.email,username:usersTable.username,id:usersTable.id}).from(usersTable).where(eq(usersTable.email, email)).then((res) => res.length != 0 ? res[0] : null)
-    return user as UserWithoutPassword 
+    return user as UserWithoutPassword | null
 }
 export const findUserById = async (id: number) => {
     const user = await db.select().from(usersTable)

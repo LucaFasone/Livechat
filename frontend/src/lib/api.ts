@@ -26,5 +26,4 @@ export async function fetchUserProfile(queryClient: QueryClient) {
     
     }
   });
-
 }

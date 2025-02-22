@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as ResetpasswordImport } from './routes/resetpassword'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
+import { Route as ChangepasswordImport } from './routes/changepassword'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth/index'
 
@@ -37,6 +38,12 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ChangepasswordRoute = ChangepasswordImport.update({
+  id: '/changepassword',
+  path: '/changepassword',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthRoute = AuthImport.update({
   id: '/_auth',
   getParentRoute: () => rootRoute,
@@ -57,6 +64,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/changepassword': {
+      id: '/changepassword'
+      path: '/changepassword'
+      fullPath: '/changepassword'
+      preLoaderRoute: typeof ChangepasswordImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -104,6 +118,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 export interface FileRoutesByFullPath {
   '': typeof AuthRouteWithChildren
+  '/changepassword': typeof ChangepasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/resetpassword': typeof ResetpasswordRoute
@@ -111,6 +126,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '/changepassword': typeof ChangepasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/resetpassword': typeof ResetpasswordRoute
@@ -120,6 +136,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/changepassword': typeof ChangepasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/resetpassword': typeof ResetpasswordRoute
@@ -128,12 +145,19 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/login' | '/register' | '/resetpassword' | '/'
+  fullPaths:
+    | ''
+    | '/changepassword'
+    | '/login'
+    | '/register'
+    | '/resetpassword'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/register' | '/resetpassword' | '/'
+  to: '/changepassword' | '/login' | '/register' | '/resetpassword' | '/'
   id:
     | '__root__'
     | '/_auth'
+    | '/changepassword'
     | '/login'
     | '/register'
     | '/resetpassword'
@@ -143,6 +167,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
+  ChangepasswordRoute: typeof ChangepasswordRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ResetpasswordRoute: typeof ResetpasswordRoute
@@ -150,6 +175,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
+  ChangepasswordRoute: ChangepasswordRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ResetpasswordRoute: ResetpasswordRoute,
@@ -168,6 +194,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_auth",
+        "/changepassword",
         "/login",
         "/register",
         "/resetpassword"
@@ -178,6 +205,9 @@ export const routeTree = rootRoute
       "children": [
         "/_auth/"
       ]
+    },
+    "/changepassword": {
+      "filePath": "changepassword.tsx"
     },
     "/login": {
       "filePath": "login.tsx"

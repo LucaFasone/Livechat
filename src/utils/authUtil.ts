@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import type { Response} from 'express';
+import type { Response } from 'express';
 
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
@@ -8,11 +8,28 @@ import { JwtData } from '../types';
 
 const secretKey = process.env.JWT_SECRET!
 const refresKey = process.env.JWT_REFRESH_SECRET!
+const resetPasswordKey = process.env.JWT_REFRESH_SECRET!
+
 
 const generateToken = (payload: JwtPayload, expiresIn = '1h') => {
     return jwt.sign(payload, secretKey, { expiresIn });
 };
-
+const generateResetPasswordToken = (email: string) => {
+    return jwt.sign({ email }, resetPasswordKey, { expiresIn: '1h' });
+}
+const verifyResetPasswordToken = (token: string) => {
+    try {
+        return jwt.verify(token, resetPasswordKey);
+    } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            throw new Error('Token scaduto');
+        }
+        if (error instanceof jwt.JsonWebTokenError) {
+            throw new Error('Token non valido');
+        }
+        throw new Error('Errore nella verifica del token');
+    }
+}
 const verifyToken = (token: string, verifyRefresh = false) => {
     try {
         return jwt.verify(token, verifyRefresh ? refresKey : secretKey);
@@ -36,12 +53,12 @@ const comparePassword = async (password: string, hashedPassword: string): Promis
     const isMatch = await bcrypt.compare(password, hashedPassword);
     return isMatch;
 };
-const generateRefreshToken =  (payload: JwtPayload) => {
+const generateRefreshToken = (payload: JwtPayload) => {
     const refreshToken = jwt.sign(payload, refresKey, { expiresIn: '7d' });
     redisFunctions.saveRefreshToken(payload.id.toString(), refreshToken).catch(console.error); //fire and forget ig
     return refreshToken;
 }
-const setRefreshTokenCookie = (res: Response, payload: JwtData ): string => {
+const setRefreshTokenCookie = (res: Response, payload: JwtData): string => {
     const refreshToken = generateRefreshToken(payload);
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -52,9 +69,9 @@ const setRefreshTokenCookie = (res: Response, payload: JwtData ): string => {
     return refreshToken;
 };
 
-const logout = (id: Number,res:Response) => {
+const logout = (id: Number, res: Response) => {
     redisFunctions.deleteRefreshToken(id.toString()).catch(console.error);
     res.clearCookie("refreshToken");
 };
-export { generateToken, verifyToken, hashPassword, comparePassword, generateRefreshToken, setRefreshTokenCookie, logout };
+export { generateToken, verifyToken, hashPassword, comparePassword, generateRefreshToken, setRefreshTokenCookie, logout, generateResetPasswordToken, verifyResetPasswordToken };
 

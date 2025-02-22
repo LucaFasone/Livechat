@@ -19,7 +19,6 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
         try {
             const parsedData = RegisterSchema.parse({ username: name, email, password })
             registerFunction.mutate({ ...parsedData, confirmPassword })
-
         } catch (e) {
             if (e instanceof z.ZodError) {
                 setError(e.errors[0].message)
@@ -61,7 +60,7 @@ export default function RegisterForm({ registerFunction }: { registerFunction: A
                 </div>
                 <div>
                     <label htmlFor="email-address" className="sr-only">Indirizzo Email</label>
-                 <Input
+                    <Input
                         id="email-address"
                         name="email"
                         type="email"
