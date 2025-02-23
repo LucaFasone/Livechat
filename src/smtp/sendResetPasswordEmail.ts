@@ -3,8 +3,8 @@ import { emailTemplate } from "../utils/sendEmail";
 import { validateEmail } from "../utils/user";
 import { transport } from "./config";
 
-export async function sendResetPasswordEmail(to: string, username:string) {
-    if(!validateEmail(to)) {
+export async function sendResetPasswordEmail(to: string, username: string) {
+    if (!await validateEmail(to)) {
         throw new Error("Invalid email");
     }
     const token = generateResetPasswordToken(to)

@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { findUserByEmail } from "../db/query";
 import { sendResetPasswordEmail } from "../smtp/sendResetPasswordEmail";
 import { validateEmail } from "../utils/user";
+import { verifyResetPasswordToken } from "../utils/authUtil";
 
 const router = Router();
 
@@ -21,5 +22,33 @@ router.post("/", async (req, res) => {
     } catch (e) {
         e instanceof ZodError ? res.status(400).json({ message: e.errors }) : res.status(500).json({ message: "Internal server error" });
     }
+});
+router.post("/:token", async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+        if (!token) {
+            throw new Error("Invalid token");
+        }
+        const decoded = verifyResetPasswordToken(token);
+        if(!(typeof decoded === "object" && "email" in decoded)) {
+            throw new Error("Invalid token");
+        }
+        if (!password) {
+            throw new Error("Please provide a password");
+        }
+        if (!await validateEmail(decoded.email)) {
+            throw new Error("Invalid email");
+        }
+        const {id} = (await findUserByEmail(decoded.email))!;
+        
+
+
+        
+        res.status(200).json({result: true});
+    } catch (e) {
+        e instanceof Error ? res.status(500).json({result:false, message: e.message }) : null
+    }
+
 });
 export default router;

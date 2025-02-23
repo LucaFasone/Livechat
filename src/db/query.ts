@@ -7,6 +7,17 @@ export const findUserByEmail = async (email: string)=> {
     const user = await db.select({email:usersTable.email,username:usersTable.username,id:usersTable.id}).from(usersTable).where(eq(usersTable.email, email)).then((res) => res.length != 0 ? res[0] : null)
     return user as UserWithoutPassword | null
 }
+export const findFullUserByEmail = async (email: string) => {
+    const user = await db.select().from(usersTable)
+    .where(eq(usersTable.email, email))
+    .then((res) => {
+        if (!res || res.length === 0) {
+          return null;
+        }
+        return res[0] as User;
+      });
+    return user
+}
 export const findUserById = async (id: number) => {
     const user = await db.select().from(usersTable)
     .where(eq(usersTable.id, id))
@@ -26,4 +37,12 @@ export const createUser = async (username: string, password: string, email: stri
         return { id, username, email } as User
     }
     throw new Error("User not created")
+}
+export const emailExits = async (email: string) => {
+    const user = await db.select().from(usersTable).where(eq(usersTable.email, email)).then((res) => res[0])
+    return user.email
+}
+
+export const updateUser = async (id: number, data: Partial<User>) => {
+    
 }
