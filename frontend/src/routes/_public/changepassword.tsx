@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useState } from 'react'
-export const Route = createFileRoute('/changepassword')({
+export const Route = createFileRoute('/_public/changepassword')({
   component: ChangePassword,
   validateSearch: (search) => {
     return {
@@ -14,9 +14,10 @@ export const Route = createFileRoute('/changepassword')({
     if (!token) {
       return redirect({ to: '/' })
     }
-    const { isValid } = await (await fetch(`http://localhost:3000/auth/resetpassword/${token}`)).json() as { isValid: boolean }
+    const { isValid } = (await (
+      await fetch(`http://localhost:3000/auth/resetpassword/${token}`)
+    ).json()) as { isValid: boolean }
     if (!isValid) {
-
     }
   },
 })
@@ -24,7 +25,7 @@ export const Route = createFileRoute('/changepassword')({
 function ChangePassword() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
@@ -33,10 +34,12 @@ function ChangePassword() {
             Reset password
           </h2>
         </div>
-        <form action="" className='mt-8 space-y-6'>
+        <form action="" className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <Input
                 id="password"
                 name="password"
@@ -49,8 +52,10 @@ function ChangePassword() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div> 
-              <label htmlFor="confirm-password" className="sr-only">Conferma Password</label>
+            <div>
+              <label htmlFor="confirm-password" className="sr-only">
+                Conferma Password
+              </label>
               <Input
                 id="confirm-password"
                 name="confirm-password"
@@ -66,7 +71,8 @@ function ChangePassword() {
           </div>
           <Button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
             Reset password
           </Button>
         </form>

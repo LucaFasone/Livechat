@@ -11,36 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ResetpasswordImport } from './routes/resetpassword'
-import { Route as RegisterImport } from './routes/register'
-import { Route as LoginImport } from './routes/login'
-import { Route as ChangepasswordImport } from './routes/changepassword'
+import { Route as PublicImport } from './routes/_public'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth/index'
+import { Route as PublicResetpasswordImport } from './routes/_public/resetpassword'
+import { Route as PublicRegisterImport } from './routes/_public/register'
+import { Route as PublicLoginImport } from './routes/_public/login'
+import { Route as PublicChangepasswordImport } from './routes/_public/changepassword'
 
 // Create/Update Routes
 
-const ResetpasswordRoute = ResetpasswordImport.update({
-  id: '/resetpassword',
-  path: '/resetpassword',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const RegisterRoute = RegisterImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ChangepasswordRoute = ChangepasswordImport.update({
-  id: '/changepassword',
-  path: '/changepassword',
+const PublicRoute = PublicImport.update({
+  id: '/_public',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -55,6 +37,30 @@ const AuthIndexRoute = AuthIndexImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const PublicResetpasswordRoute = PublicResetpasswordImport.update({
+  id: '/resetpassword',
+  path: '/resetpassword',
+  getParentRoute: () => PublicRoute,
+} as any)
+
+const PublicRegisterRoute = PublicRegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => PublicRoute,
+} as any)
+
+const PublicLoginRoute = PublicLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => PublicRoute,
+} as any)
+
+const PublicChangepasswordRoute = PublicChangepasswordImport.update({
+  id: '/changepassword',
+  path: '/changepassword',
+  getParentRoute: () => PublicRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -66,33 +72,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/changepassword': {
-      id: '/changepassword'
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PublicImport
+      parentRoute: typeof rootRoute
+    }
+    '/_public/changepassword': {
+      id: '/_public/changepassword'
       path: '/changepassword'
       fullPath: '/changepassword'
-      preLoaderRoute: typeof ChangepasswordImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PublicChangepasswordImport
+      parentRoute: typeof PublicImport
     }
-    '/login': {
-      id: '/login'
+    '/_public/login': {
+      id: '/_public/login'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PublicLoginImport
+      parentRoute: typeof PublicImport
     }
-    '/register': {
-      id: '/register'
+    '/_public/register': {
+      id: '/_public/register'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof RegisterImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PublicRegisterImport
+      parentRoute: typeof PublicImport
     }
-    '/resetpassword': {
-      id: '/resetpassword'
+    '/_public/resetpassword': {
+      id: '/_public/resetpassword'
       path: '/resetpassword'
       fullPath: '/resetpassword'
-      preLoaderRoute: typeof ResetpasswordImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PublicResetpasswordImport
+      parentRoute: typeof PublicImport
     }
     '/_auth/': {
       id: '/_auth/'
@@ -116,30 +129,49 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface PublicRouteChildren {
+  PublicChangepasswordRoute: typeof PublicChangepasswordRoute
+  PublicLoginRoute: typeof PublicLoginRoute
+  PublicRegisterRoute: typeof PublicRegisterRoute
+  PublicResetpasswordRoute: typeof PublicResetpasswordRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicChangepasswordRoute: PublicChangepasswordRoute,
+  PublicLoginRoute: PublicLoginRoute,
+  PublicRegisterRoute: PublicRegisterRoute,
+  PublicResetpasswordRoute: PublicResetpasswordRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '': typeof AuthRouteWithChildren
-  '/changepassword': typeof ChangepasswordRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/resetpassword': typeof ResetpasswordRoute
+  '': typeof PublicRouteWithChildren
+  '/changepassword': typeof PublicChangepasswordRoute
+  '/login': typeof PublicLoginRoute
+  '/register': typeof PublicRegisterRoute
+  '/resetpassword': typeof PublicResetpasswordRoute
   '/': typeof AuthIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/changepassword': typeof ChangepasswordRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/resetpassword': typeof ResetpasswordRoute
+  '': typeof PublicRouteWithChildren
+  '/changepassword': typeof PublicChangepasswordRoute
+  '/login': typeof PublicLoginRoute
+  '/register': typeof PublicRegisterRoute
+  '/resetpassword': typeof PublicResetpasswordRoute
   '/': typeof AuthIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth': typeof AuthRouteWithChildren
-  '/changepassword': typeof ChangepasswordRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/resetpassword': typeof ResetpasswordRoute
+  '/_public': typeof PublicRouteWithChildren
+  '/_public/changepassword': typeof PublicChangepasswordRoute
+  '/_public/login': typeof PublicLoginRoute
+  '/_public/register': typeof PublicRegisterRoute
+  '/_public/resetpassword': typeof PublicResetpasswordRoute
   '/_auth/': typeof AuthIndexRoute
 }
 
@@ -153,32 +185,27 @@ export interface FileRouteTypes {
     | '/resetpassword'
     | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/changepassword' | '/login' | '/register' | '/resetpassword' | '/'
+  to: '' | '/changepassword' | '/login' | '/register' | '/resetpassword' | '/'
   id:
     | '__root__'
     | '/_auth'
-    | '/changepassword'
-    | '/login'
-    | '/register'
-    | '/resetpassword'
+    | '/_public'
+    | '/_public/changepassword'
+    | '/_public/login'
+    | '/_public/register'
+    | '/_public/resetpassword'
     | '/_auth/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
-  ChangepasswordRoute: typeof ChangepasswordRoute
-  LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
-  ResetpasswordRoute: typeof ResetpasswordRoute
+  PublicRoute: typeof PublicRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
-  ChangepasswordRoute: ChangepasswordRoute,
-  LoginRoute: LoginRoute,
-  RegisterRoute: RegisterRoute,
-  ResetpasswordRoute: ResetpasswordRoute,
+  PublicRoute: PublicRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -194,10 +221,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_auth",
-        "/changepassword",
-        "/login",
-        "/register",
-        "/resetpassword"
+        "/_public"
       ]
     },
     "/_auth": {
@@ -206,17 +230,30 @@ export const routeTree = rootRoute
         "/_auth/"
       ]
     },
-    "/changepassword": {
-      "filePath": "changepassword.tsx"
+    "/_public": {
+      "filePath": "_public.tsx",
+      "children": [
+        "/_public/changepassword",
+        "/_public/login",
+        "/_public/register",
+        "/_public/resetpassword"
+      ]
     },
-    "/login": {
-      "filePath": "login.tsx"
+    "/_public/changepassword": {
+      "filePath": "_public/changepassword.tsx",
+      "parent": "/_public"
     },
-    "/register": {
-      "filePath": "register.tsx"
+    "/_public/login": {
+      "filePath": "_public/login.tsx",
+      "parent": "/_public"
     },
-    "/resetpassword": {
-      "filePath": "resetpassword.tsx"
+    "/_public/register": {
+      "filePath": "_public/register.tsx",
+      "parent": "/_public"
+    },
+    "/_public/resetpassword": {
+      "filePath": "_public/resetpassword.tsx",
+      "parent": "/_public"
     },
     "/_auth/": {
       "filePath": "_auth/index.tsx",

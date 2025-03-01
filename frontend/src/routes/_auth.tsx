@@ -1,5 +1,5 @@
 import { fetchUserProfile } from '@/lib/api'
-import { User, UserSchema } from '@/lib/types'
+import { User } from '@/lib/types'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth')({
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/_auth')({
       return context
     } catch (e) {
       context.user = null
-      return redirect({ to: '/login' })
+      throw redirect({ to: '/login' })
     }
   },
 

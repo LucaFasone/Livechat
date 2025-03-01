@@ -5,7 +5,7 @@ export async function fetchUserProfile(queryClient: QueryClient) {
   return queryClient.fetchQuery<User>({
     queryKey: ['me'],
     queryFn: async () => {
-      try{
+      try {
         const response = await fetch('http://localhost:3000/profile/me', {
           headers: {
             'Authorization': `Bearer ${queryClient.getQueryData(['token'])}`,
@@ -17,13 +17,13 @@ export async function fetchUserProfile(queryClient: QueryClient) {
           throw new Error('Unauthorized');
         }
         if (!response.ok) throw new Error('Failed to fetch user');
-        const data = await response.json();        
+        const data = await response.json();
         return data;
-      }catch(e){
-       
+      } catch (e) {
+
         throw new Error('Failed to fetch user');
       }
-    
+
     }
   });
 }
