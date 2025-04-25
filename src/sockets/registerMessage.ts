@@ -1,18 +1,12 @@
-import { SocketHandler, SocketMessage } from "../types/socket";
+import { SocketHandler, WsMessage, WsMessageAck } from "../types/socket";
 
 export const registerMessage: SocketHandler = (socket,_) => {
-    socket.on("message", (data:SocketMessage,ack) =>{
-        if(!data.message || !data.room){
-            ack({
-                success: false,
-                error: "Messaggio o room non specificati. Assicurati di inviare entrambi i campi."
-              });
+    socket.on("message", (data:WsMessage,ack:WsMessageAck) =>{
+        if(!data.data || !data.roomId ){
+            ack("OK");
             return
         }
-        socket.to(data.room).emit('message',{socketId: socket.id,message:data.message})
-        ack({
-            success: true,
-            message: "Messaggio inviato con successo"
-          });
+        socket.to(data.roomId).emit('message',{socketId: socket.id,message:data.data})
+        ack("OK");
     })
 } 

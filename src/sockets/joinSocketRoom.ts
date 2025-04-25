@@ -1,13 +1,11 @@
-import { SocketHandler, SocketMessage } from "../types/socket";
+import { SocketHandler, WsJoinRoomMessage, WsMessageAck } from "../types/socket";
 
 export const joinSocketRooms: SocketHandler = (socket) => {
-    socket.on('joinRoom', (data:SocketMessage,ack) =>{
+    socket.on('joinRoom', (data:WsJoinRoomMessage,ack:WsMessageAck) =>{
         //TODO: check if the user exits
-        if(data.room.length > 0){
-            socket.join(data.room)
-            ack({
-                success:true
-            })
+        if(data.roomId && data.roomId.length > 0){
+            socket.join(data.roomId)
+            ack("OK")
         }
     })
 

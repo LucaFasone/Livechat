@@ -1,17 +1,8 @@
 import { JwtPayload as DefaultJwtPayload } from 'jsonwebtoken';
 import { z } from "zod";
 
-export const WsMessageSchema = z.object({
-    type: z.string(),
-    data: z.any(),
-    roomId: z.union([z.string(), z.number()]).optional(),
-    userId: z.union([z.string(), z.number()]).optional(),
-});
 
 
-export const WsMessageAckSchema = z.function()
-    .args(z.enum(["OK", "NOT OK"]))
-    .returns(z.void());
 
 export const UserSchema = z.object({
     id: z.number(),
@@ -42,8 +33,6 @@ export type EmailTemplate = {
     html: string;
 }
 
-export type WsMessage = z.infer<typeof WsMessageSchema>;
-export type WsMessageAck = z.infer<typeof WsMessageAckSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type UserRegistration = z.infer<typeof UserRegistrationSchema>;
 export type UserWithoutPassword = Omit<z.infer<typeof UserSchema>, 'password'>;
