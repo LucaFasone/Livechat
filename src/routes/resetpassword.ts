@@ -41,10 +41,6 @@ router.post("/:token", async (req, res) => {
             throw new Error("Invalid email");
         }
         const {id} = (await findUserByEmail(decoded.email))!;
-        
-
-
-        
         res.status(200).json({result: true});
     } catch (e) {
         e instanceof Error ? res.status(500).json({result:false, message: e.message }) : null

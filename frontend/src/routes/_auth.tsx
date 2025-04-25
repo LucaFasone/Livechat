@@ -1,5 +1,5 @@
 import { fetchUserProfile } from '@/lib/api'
-import { User } from '@/lib/types'
+import { User, UserSchema } from '@/lib/types'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth')({

@@ -3,7 +3,12 @@ import Redis from 'redis';
 
 //{url: urlToRedis} in production
 const redisClient = Redis.createClient();
-redisClient.connect();
+
+redisClient.connect()
+  .catch(async () => {
+    console.log("Errore su redis disconnesione silenziosa");
+    await redisClient.quit();
+  });
 
 redisClient.on('connect', () => {
   console.log('Redis client connected');
