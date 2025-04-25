@@ -6,7 +6,9 @@ export const joinSocketRooms: SocketHandler = (socket) => {
         if(data.roomId && data.roomId.length > 0){
             socket.join(data.roomId)
             ack("OK")
+            return
         }
+        ack("NOT OK")
     })
 
 }
