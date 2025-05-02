@@ -1,3 +1,4 @@
+//TODO: Add indexes to all of the tables 
 import { relations } from 'drizzle-orm';
 import { int, mysqlTable, serial, uniqueIndex, varchar, text, bigint, foreignKey } from 'drizzle-orm/mysql-core';
 import { sql } from 'drizzle-orm/sql';
@@ -56,5 +57,25 @@ export const userInRoom = mysqlTable('user_in_room', {
         foreignColumns: [roomTable.id],
     }).onDelete("cascade").onUpdate("cascade"),
 }))
+
+//TODO(IMPORTANT): MOVE THIS TO REDIS ASAP 
+
+export const userAllowedToMessage = mysqlTable('user_allowed_to_message', {
+    id: serial().primaryKey(),
+    senderId: bigint({ mode: "bigint", unsigned: true }).notNull(),
+    recipientId: bigint({ mode: "bigint", unsigned: true }).notNull()
+}, (table) => ({
+    fk_sender: foreignKey({
+        name: "user_allowed_sender_id_users_id_fk",
+        columns: [table.senderId],
+        foreignColumns: [usersTable.id],
+    }).onDelete("cascade").onUpdate("cascade"),
+    fk_recipient: foreignKey({
+        name: "user_allowed_recipient_id_users_id_fk",
+        columns: [table.recipientId],
+        foreignColumns: [usersTable.id],
+    }).onDelete("cascade").onUpdate("cascade"),
+}));
+
 //maybe its not needed to use a relations function
 // export const messageRelations = relations(messageTable, ({ one, many }) => ({}))
