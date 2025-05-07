@@ -53,6 +53,10 @@ export const redisFunctions = {
     } catch (error) {
       throw new Error('Errore nella comunicazione con Redis');
     }
+  },
+  addUserToReachableUsers: async (userTo:string, userFrom:string) => {
+    
+
   }
 
 

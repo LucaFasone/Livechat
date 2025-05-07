@@ -13,6 +13,7 @@ import { bearerStrategy } from './middleware/passport';
 import { createSocketServer } from './config/socket';
 import { registerSocketHandlers } from './sockets/index';
 
+
 const app = express()
 const httpServer = createServer(app)
 export const io = createSocketServer(httpServer);
@@ -37,5 +38,7 @@ app.use("/profile", profileRouter);
 httpServer.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
     registerSocketHandlers(io);
+   
+
 
 });

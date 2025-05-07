@@ -1,7 +1,7 @@
 import { db } from "."
 import { User, UserWithoutPassword } from "../types"
 import { userAllowedToMessage, usersTable } from "./schema"
-import { eq } from "drizzle-orm"
+import { eq, and} from "drizzle-orm"
 
 export const findUserByEmail = async (email: string)=> {
     const user = await db.select({email:usersTable.email,username:usersTable.username,id:usersTable.id}).from(usersTable).where(eq(usersTable.email, email)).then((res) => res.length != 0 ? res[0] : null)
@@ -47,10 +47,3 @@ export const emailExits = async (email: string) => {
 export const updateUser = async (id: number, data: Partial<User>) => {
     
 }
-export const addUserToReachableUsers = async (recipientId: number, senderId: number) => {
-    const [result] = await db.insert(userAllowedToMessage).values({
-      senderId: BigInt(senderId),
-      recipientId: BigInt(recipientId)
-    })
-    return result;
-};

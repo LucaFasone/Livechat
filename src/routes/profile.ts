@@ -4,7 +4,6 @@ import passport from 'passport';
 import { logout } from '../utils/authUtil';
 import { UserWithoutPassword } from '../types';
 import { handleAuthenticatedError } from '../middleware/handleError';
-import { addUserToReachableUsers } from '../db/query';
 
 const router = Router();
 
@@ -32,7 +31,7 @@ router.post("/add-user",async (req,res) =>{
             throw new Error("User Not Found")
         }
         const {recipientId} = req.body
-        await addUserToReachableUsers(req.user.id,recipientId)
+        //await addUserToReachableUsers(req.user.id,recipientId)
         res.status(200).json({message:"User added successfully"})
     }catch(e){
         e instanceof Error ? res.status(401) : res.json(500).json("Errore ")
