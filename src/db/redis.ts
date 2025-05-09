@@ -24,14 +24,6 @@ export const redisFunctions = {
     }
   },
 
-  saveRefreshToken: async (userId: string, refreshToken: string) => {
-    try {
-      await redisClient.set(userId, refreshToken, { EX: 7 * 24 * 60 * 60 });
-    } catch (error) {
-      throw new Error('Errore nella comunicazione con Redis');
-    }
-  },
-
   deleteRefreshToken: async (userId: string) => {
     try {
       await redisClient.del(userId);
