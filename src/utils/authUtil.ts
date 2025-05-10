@@ -3,13 +3,12 @@ import type { Response } from 'express';
 
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
-import { redisFunctions } from '../db/redis';
 import { JwtData } from '../types';
+import { deleteRefreshToken, saveRefreshToken } from '../db/mongodb';
 
 const secretKey = process.env.JWT_SECRET!
 const refresKey = process.env.JWT_REFRESH_SECRET!
 const resetPasswordKey = process.env.JWT_REFRESH_SECRET!
-
 
 const generateToken = (payload: JwtPayload, expiresIn = '1h') => {
     return jwt.sign(payload, secretKey, { expiresIn });
@@ -53,9 +52,9 @@ const comparePassword = async (password: string, hashedPassword: string): Promis
     const isMatch = await bcrypt.compare(password, hashedPassword);
     return isMatch;
 };
-const generateRefreshToken = (payload: JwtPayload) => {
+const generateRefreshToken = (payload: JwtData) => {
     const refreshToken = jwt.sign(payload, refresKey, { expiresIn: '7d' });
-    redisFunctions.saveRefreshToken(payload.id.toString(), refreshToken).catch(console.error); //fire and forget ig
+    saveRefreshToken(payload.id, refreshToken)
     return refreshToken;
 }
 const setRefreshTokenCookie = (res: Response, payload: JwtData): string => {
@@ -69,8 +68,8 @@ const setRefreshTokenCookie = (res: Response, payload: JwtData): string => {
     return refreshToken;
 };
 
-const logout = (id: Number, res: Response) => {
-    redisFunctions.deleteRefreshToken(id.toString()).catch(console.error);
+const logout = (id: string, res: Response) => {
+    deleteRefreshToken(id)
     res.clearCookie("refreshToken");
 };
 export { generateToken, verifyToken, hashPassword, comparePassword, generateRefreshToken, setRefreshTokenCookie, logout, generateResetPasswordToken, verifyResetPasswordToken };
