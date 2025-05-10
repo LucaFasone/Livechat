@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { UserRegistrationSchema } from "../types";
 import { ZodError } from "zod";
 import { findUserByEmail } from "../db/query";
 import { sendResetPasswordEmail } from "../smtp/sendResetPasswordEmail";
@@ -16,7 +15,7 @@ router.post("/", async (req, res) => {
         }
         const user = await findUserByEmail(to);
         if (user) {
-            sendResetPasswordEmail(to, user.username);
+            sendResetPasswordEmail(to, user.username, user.id);
         }
         res.status(200).json({ message: "Email sent if user exits" });
     } catch (e) {
@@ -31,7 +30,7 @@ router.post("/:token", async (req, res) => {
             throw new Error("Invalid token");
         }
         const decoded = verifyResetPasswordToken(token);
-        if(!(typeof decoded === "object" && "email" in decoded)) {
+        if (!(typeof decoded === "object" && "email" in decoded)) {
             throw new Error("Invalid token");
         }
         if (!password) {
@@ -40,10 +39,10 @@ router.post("/:token", async (req, res) => {
         if (!await validateEmail(decoded.email)) {
             throw new Error("Invalid email");
         }
-        const {id} = (await findUserByEmail(decoded.email))!;
-        res.status(200).json({result: true});
+        const { id } = (await findUserByEmail(decoded.email))!;
+        res.status(200).json({ result: true });
     } catch (e) {
-        e instanceof Error ? res.status(500).json({result:false, message: e.message }) : null
+        e instanceof Error ? res.status(500).json({ result: false, message: e.message }) : null
     }
 
 });

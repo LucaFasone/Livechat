@@ -7,7 +7,6 @@ const bearerStrategy = new BearerStrategy(
     { passReqToCallback: true },
     async (req: Express.Request, token: any, done: any) => {
         try {
-            console.log("decoded");
             const actualToken = req.newAccessToken || token;
             const decoded = verifyToken(actualToken) as JwtData;
             if (!decoded || typeof decoded !== 'object') {

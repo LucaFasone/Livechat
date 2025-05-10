@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
-import {generateToken, logout, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
+import {generateToken, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
 import { JwtData } from '../types';
-import { redisFunctions } from '../db/redis';
+import { getRefreshToken } from '../db/mongodb';
 export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, next) => {
     try {
         const token = req.headers['authorization']?.split(' ')[1];
@@ -14,8 +14,8 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
         const refreshToken = req.cookies['refreshToken'] as string;
         try {
             const decodedRefreshToken = verifyToken(refreshToken, true) as JwtData;
-            const isRefreshTokenValid = await redisFunctions.getRefreshToken(decodedRefreshToken.id.toString());
-            console.log(isRefreshTokenValid);
+            const isRefreshTokenValid = await getRefreshToken(decodedRefreshToken.id.toString());
+
             if (!decodedRefreshToken || typeof decodedRefreshToken !== "object" || !isRefreshTokenValid) {
                 res.status(401).json({ message: 'Refresh token non valido' });
                 return;

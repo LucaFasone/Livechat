@@ -4,7 +4,7 @@ import { int, mysqlTable, serial, uniqueIndex, varchar, text, bigint, foreignKey
 import { sql } from 'drizzle-orm/sql';
 //i should use zod to extract the types from the schema BUT i m too lazy 
 export const usersTable = mysqlTable('users', {
-    id: serial().primaryKey(),
+    id: varchar({ length: 36 }).primaryKey(),
     username: varchar({ length: 255 }).notNull(),
     password: varchar({ length: 255 }).notNull(),
     email: varchar({ length: 255 }).notNull().unique()
@@ -12,13 +12,13 @@ export const usersTable = mysqlTable('users', {
     emailUniqueIndex: uniqueIndex("emailUniqueIndex").on(sql`(lower(${table.email}))`),
 }));
 export const roomTable = mysqlTable('room', {
-    id: serial().primaryKey(),
+    id: varchar({ length: 36 }).primaryKey(),
     name: varchar({ length: 255 }).notNull(),
     last_message: text(),
     unread_messages: int()
 });
 export const messageTable = mysqlTable('message', {
-    id: serial().primaryKey(),
+    id: varchar({ length: 36 }).primaryKey(),
     message: text(),
     sender_id: bigint({ mode: "bigint", unsigned: true }).notNull(),
     recipient_id: bigint({ mode: "bigint", unsigned: true }),
@@ -42,7 +42,7 @@ export const messageTable = mysqlTable('message', {
 }))
 
 export const userInRoom = mysqlTable('user_in_room', {
-    id: serial().primaryKey(),
+    id: varchar({ length: 36 }).primaryKey(),
     userId: bigint({ mode: "bigint", unsigned: true }).notNull(),
     roomId: bigint({ mode: "bigint", unsigned: true }).notNull()
 }, (table) => ({
@@ -61,7 +61,7 @@ export const userInRoom = mysqlTable('user_in_room', {
 //TODO(IMPORTANT): MOVE THIS TO REDIS ASAP 
 
 export const userAllowedToMessage = mysqlTable('user_allowed_to_message', {
-    id: serial().primaryKey(),
+    id: varchar({ length: 36 }).primaryKey(),
     senderId: bigint({ mode: "bigint", unsigned: true }).notNull(),
     recipientId: bigint({ mode: "bigint", unsigned: true }).notNull()
 }, (table) => ({

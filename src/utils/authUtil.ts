@@ -4,7 +4,7 @@ import type { Response } from 'express';
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import { JwtData } from '../types';
-import { deleteRefreshToken, saveRefreshToken } from '../db/mongodb';
+import { deleteRefreshToken, saveRefreshToken, saveResetPasswordToken } from '../db/mongodb';
 
 const secretKey = process.env.JWT_SECRET!
 const refresKey = process.env.JWT_REFRESH_SECRET!
@@ -13,11 +13,14 @@ const resetPasswordKey = process.env.JWT_REFRESH_SECRET!
 const generateToken = (payload: JwtPayload, expiresIn = '1h') => {
     return jwt.sign(payload, secretKey, { expiresIn });
 };
-const generateResetPasswordToken = (email: string) => {
-    return jwt.sign({ email }, resetPasswordKey, { expiresIn: '1h' });
+const generateResetPasswordToken = async (email: string, id: string) => {
+    const token = jwt.sign({ email }, resetPasswordKey, { expiresIn: '1h' });
+    const savedToken = await saveResetPasswordToken(id, token)
+    return savedToken
 }
 const verifyResetPasswordToken = (token: string) => {
     try {
+        
         return jwt.verify(token, resetPasswordKey);
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
@@ -73,4 +76,6 @@ const logout = (id: string, res: Response) => {
     res.clearCookie("refreshToken");
 };
 export { generateToken, verifyToken, hashPassword, comparePassword, generateRefreshToken, setRefreshTokenCookie, logout, generateResetPasswordToken, verifyResetPasswordToken };
+
+
 

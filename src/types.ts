@@ -2,7 +2,7 @@ import { JwtPayload as DefaultJwtPayload } from 'jsonwebtoken';
 import { z } from "zod";
 
 export const UserSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     username: z.string(),
     email: z.string().email(),
     password: z.string().optional(),
