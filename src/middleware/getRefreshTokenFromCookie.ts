@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import {generateToken, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
+import { generateToken, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
 import { JwtData } from '../types';
 import { getRefreshToken } from '../db/mongodb';
 export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, next) => {
@@ -13,7 +13,7 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
     } catch (err) {
         const refreshToken = req.cookies['refreshToken'] as string;
         try {
-            const decodedRefreshToken = verifyToken(refreshToken, true) as JwtData;
+            const decodedRefreshToken = verifyToken(refreshToken, true);
             const isRefreshTokenValid = await getRefreshToken(decodedRefreshToken.id.toString());
 
             if (!decodedRefreshToken || typeof decodedRefreshToken !== "object" || !isRefreshTokenValid) {

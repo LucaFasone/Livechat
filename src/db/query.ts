@@ -26,8 +26,8 @@ export const findUserById = async (id: string) => {
       if (!res || res.length === 0) {
         return null;
       }
-      const { email, username, id } = res[0];
-      return { email, username, id } as UserWithoutPassword;
+      const { email, username, id } = res[0] as UserWithoutPassword;
+      return { email, username, id };
     });
   return user
 }

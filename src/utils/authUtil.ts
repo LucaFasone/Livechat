@@ -10,18 +10,17 @@ const secretKey = process.env.JWT_SECRET!
 const refresKey = process.env.JWT_REFRESH_SECRET!
 const resetPasswordKey = process.env.JWT_REFRESH_SECRET!
 
-const generateToken = (payload: JwtPayload, expiresIn = '1h') => {
+const generateToken = (payload: JwtData, expiresIn = '1h') => {
     return jwt.sign(payload, secretKey, { expiresIn });
 };
-const generateResetPasswordToken = async (email: string, id: string) => {
+const generateResetPasswordToken = async (email: string) => {
     const token = jwt.sign({ email }, resetPasswordKey, { expiresIn: '1h' });
-    const savedToken = await saveResetPasswordToken(id, token)
+    const savedToken = await saveResetPasswordToken(token)
     return savedToken
 }
 const verifyResetPasswordToken = (token: string) => {
     try {
-        
-        return jwt.verify(token, resetPasswordKey);
+        return jwt.verify(token, resetPasswordKey) as JwtData;
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
             throw new Error('Token scaduto');
@@ -34,7 +33,7 @@ const verifyResetPasswordToken = (token: string) => {
 }
 const verifyToken = (token: string, verifyRefresh = false) => {
     try {
-        return jwt.verify(token, verifyRefresh ? refresKey : secretKey);
+        return jwt.verify(token, verifyRefresh ? refresKey : secretKey) as JwtData;
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
             throw new Error('Token scaduto');

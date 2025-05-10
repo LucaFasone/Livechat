@@ -18,7 +18,7 @@ export const UserRegistrationSchema = z.object({
 
 
 export interface JwtData extends DefaultJwtPayload {
-    id: string; // TODO: UUID TYPE
+    id: string; 
     email: string;
 }
 

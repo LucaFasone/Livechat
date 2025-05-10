@@ -14,7 +14,6 @@ export const TokenModel = mongoose.model("Token", TokenSchema)
 
 const TokenPasswordSchema = new Schema({
     _id: { type: String, required: true},
-    resetPasswordToken: { type: String, required: true },
     createdAt: { type: Date, default: Date.now } 
 })
 
