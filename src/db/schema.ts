@@ -19,9 +19,9 @@ export const roomTable = mysqlTable('room', {
 export const messageTable = mysqlTable('message', {
     id: varchar({ length: 36 }).primaryKey(),
     message: text(),
-    sender_id: bigint({ mode: "bigint", unsigned: true }).notNull(),
-    recipient_id: bigint({ mode: "bigint", unsigned: true }),
-    roomId: bigint({ mode: "bigint", unsigned: true })
+    sender_id: varchar({ length: 36 }).notNull(),
+    recipient_id: varchar({ length: 36 }),
+    roomId: varchar({ length: 36 })
 }, (table) => ({
     fk: foreignKey({
         name: "message_sender_id_users_id_fk",
@@ -42,8 +42,8 @@ export const messageTable = mysqlTable('message', {
 
 export const userInRoom = mysqlTable('user_in_room', {
     id: varchar({ length: 36 }).primaryKey(),
-    userId: bigint({ mode: "bigint", unsigned: true }).notNull(),
-    roomId: bigint({ mode: "bigint", unsigned: true }).notNull()
+    userId: varchar({ length: 36 }).notNull(),
+    roomId: varchar({ length: 36 }).notNull()
 }, (table) => ({
     fk: foreignKey({
         name: "user_in_room_user_id_users_id_fk",
@@ -61,8 +61,8 @@ export const userInRoom = mysqlTable('user_in_room', {
 
 export const userAllowedToMessage = mysqlTable('user_allowed_to_message', {
     id: varchar({ length: 36 }).primaryKey(),
-    senderId: bigint({ mode: "bigint", unsigned: true }).notNull(),
-    recipientId: bigint({ mode: "bigint", unsigned: true }).notNull()
+    senderId: varchar({ length: 36 }).notNull(),
+    recipientId: varchar({ length: 36 }).notNull()
 }, (table) => ({
     fk_sender: foreignKey({
         name: "user_allowed_sender_id_users_id_fk",

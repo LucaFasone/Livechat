@@ -9,15 +9,15 @@ mongoose.connect('mongodb://localhost:27017/livechat');
 
 export const saveRefreshToken = async (userId: string, token: string) => {
     const [tokenDoc, _] = await toAsyncHandler<TokenType>(() => new TokenModel({ _id: userId, token }).save())
-    return tokenDoc ? tokenDoc.refreshToken : null
+    return tokenDoc ? tokenDoc.token : null
 }
 export const getRefreshToken = async (userId: string) => {
     const [tokenDoc, _] = await toAsyncHandler<TokenType>(() => TokenModel.findById(userId))
-    return tokenDoc ? verifyToken(tokenDoc.refreshToken, true) : null
+    return tokenDoc ? verifyToken(tokenDoc.token, true) : null
 }
 export const deleteRefreshToken = async (userId: string) => {
     const [tokenDoc, _] = await toAsyncHandler<TokenType>(() => TokenModel.findByIdAndDelete(userId))
-    return tokenDoc ? verifyToken(tokenDoc.refreshToken) : null
+    return tokenDoc ? verifyToken(tokenDoc.token) : null
 }
 
 export const saveResetPasswordToken = async (token: string) => {

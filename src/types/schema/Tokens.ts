@@ -2,7 +2,7 @@ import mongoose, { InferSchemaType, Schema } from "mongoose";
 
 const TokenSchema = new Schema({
     _id: { type: String, required: true },
-    refreshToken: { type: String, required: true },
+    token: { type: String, required: true },
     createdAt: { type: Date, default: Date.now,required:false} 
 })
 

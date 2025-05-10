@@ -3,7 +3,6 @@ import { ZodError } from "zod";
 import { findUserByEmail } from "../db/query";
 import { sendResetPasswordEmail } from "../smtp/sendResetPasswordEmail";
 import { validateEmail } from "../utils/user";
-import { verifyResetPasswordToken } from "../utils/authUtil";
 import { getResetPasswordToken } from "../db/mongodb";
 
 const router = Router();
@@ -41,7 +40,7 @@ router.post("/:token", async (req, res) => {
             throw new Error("Invalid email");
         }
         const { id } = (await findUserByEmail(decoded.email))!;
-        
+
         res.status(200).json({ result: true });
     } catch (e) {
         e instanceof Error ? res.status(500).json({ result: false, message: e.message }) : null
