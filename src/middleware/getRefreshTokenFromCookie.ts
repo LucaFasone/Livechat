@@ -1,6 +1,5 @@
 import type { RequestHandler } from 'express';
 import { generateToken, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
-import { JwtData } from '../types';
 import { getRefreshToken } from '../db/mongodb';
 export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, next) => {
     try {
@@ -10,17 +9,17 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
         }
         verifyToken(token);
         next();
-    } catch (err) {
+    } catch (err) { 
         const refreshToken = req.cookies['refreshToken'] as string;
         try {
-            const decodedRefreshToken = verifyToken(refreshToken, true);
-            const isRefreshTokenValid = await getRefreshToken(decodedRefreshToken.id.toString());
+            const decodedRefreshToken = await getRefreshToken(refreshToken);
 
-            if (!decodedRefreshToken || typeof decodedRefreshToken !== "object" || !isRefreshTokenValid) {
+            if (!decodedRefreshToken || typeof decodedRefreshToken !== "object" ) {
                 res.status(401).json({ message: 'Refresh token non valido' });
                 return;
             }
             const { id, email } = decodedRefreshToken;
+            console.log(id,email);
             setRefreshTokenCookie(res, { id: id.toString(), email });
             req.newAccessToken = generateToken({ id: id.toString(), email });
             next();

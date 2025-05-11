@@ -1,10 +1,11 @@
 import { NextFunction,Response,Request } from "express";
 import { ZodError } from "zod";
 
-export const handleAuthenticatedError = (err: Error, req: Request, res: Response, _: NextFunction) => {
-    res.clearCookie("refreshToken");
-    err.message ? res.status(401).json({ message: err.message }) : res.status(500).json({message:"Server Error"})
-}
+    export const handleAuthenticatedError = (err: Error, req: Request, res: Response, _: NextFunction) => {
+        console.log(err);
+        //res.clearCookie("refreshToken");
+        err.message ? res.status(401).json({ message: err.message }) : res.status(500).json({message:"Server Error"})
+    }
 
 export const handleValidationError = (err: Error, req: Request, res: Response, _: NextFunction) => {
     if (err instanceof ZodError) {

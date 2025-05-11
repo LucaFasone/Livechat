@@ -33,7 +33,8 @@ const verifyResetPasswordToken = (token: string) => {
 }
 const verifyToken = (token: string, verifyRefresh = false) => {
     try {
-        return jwt.verify(token, verifyRefresh ? refresKey : secretKey) as JwtData;
+        const x =  jwt.verify(token, verifyRefresh ? refresKey : secretKey) as JwtData;        
+        return x
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
             throw new Error('Token scaduto');

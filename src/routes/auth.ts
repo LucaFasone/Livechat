@@ -4,7 +4,7 @@ import { User, UserRegistration, UserRegistrationSchema, UserWithoutPassword } f
 import { comparePassword, generateRefreshToken, generateToken, hashPassword, setRefreshTokenCookie } from '../utils/authUtil';
 import resetPasswordRouter from './resetpassword';
 import { handleValidationError } from '../middleware/handleError';
-import { errorHandler } from '../middleware/errorHandler';
+import { expressHandler } from '../middleware/expressHandler';
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.use('/resetpassword', resetPasswordRouter)
 
 router.post(
     '/register',
-    errorHandler(async (req: Request, res: Response) => {
+    expressHandler(async (req: Request, res: Response) => {
         const { username, password, email } = req.body as UserRegistration;
         if (!username || !password || !email) {
             throw new Error("Please provide username, password, and email");
@@ -33,7 +33,7 @@ router.post(
 
 router.post(
     '/login',
-    errorHandler(async (req: Request, res: Response) => {
+    expressHandler(async (req: Request, res: Response) => {
         const { email, password } = req.body as UserRegistration;
         if (!email || !password) {
             throw new Error("Please provide email and password");

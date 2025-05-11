@@ -7,7 +7,6 @@ import { authRouter } from './routes/auth';
 import { profileRouter } from './routes/profile';
 import cors from 'cors';
 import coockieParser from 'cookie-parser';
-import { generateRefreshTokenFromCookie } from './middleware/getRefreshTokenFromCookie';
 import { createLog } from './middleware/logger';
 import { bearerStrategy } from './middleware/passport';
 import { createSocketServer } from './config/socket';
@@ -16,21 +15,21 @@ import { handleValidationError } from './middleware/handleError';
 
 
 const app = express()
+app.use(passport.initialize());
 const httpServer = createServer(app)
 export const io = createSocketServer(httpServer);
 
 app.use(coockieParser());
 app.use(createLog);
 passport.use(bearerStrategy);
+app.use(passport.authenticate('bearer', { session: false }));
 app.use(express.json())
-app.use(passport.initialize());
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true,
     exposedHeaders: ['Authorization']
 }));
 
-app.use(['/profile'], generateRefreshTokenFromCookie);
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 
