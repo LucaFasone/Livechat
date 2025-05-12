@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 
 export const handleAuthenticatedError = (err: Error, req: Request, res: Response, _: NextFunction) => {
     res.clearCookie("refreshToken");
-    err.message ? res.status(401).json({ message: err.message }) : res.status(500).json({message:"Server Error"})
+    err.message ? res.status(401).json({ message: err.message }) : res.status(500).json({message:"Server Error you are being disconnected"})
 }
 
 export const handleValidationError = (err: Error, req: Request, res: Response, _: NextFunction) => {

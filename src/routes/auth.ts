@@ -4,7 +4,7 @@ import { User, UserRegistration, UserRegistrationSchema, UserWithoutPassword } f
 import { comparePassword, generateRefreshToken, generateToken, hashPassword, setRefreshTokenCookie } from '../utils/authUtil';
 import resetPasswordRouter from './resetpassword';
 import { handleValidationError } from '../middleware/handleError';
-import { expressHandler } from '../middleware/errorHandler';
+import { expressHandler } from '../middleware/expressHandler';
 
 const router = express.Router();
 

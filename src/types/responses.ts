@@ -1,0 +1,14 @@
+import type { Response } from "express";
+
+export type TResponse<T> = {
+    readonly kind: T;
+    readonly status: number;
+    readonly apply: (response: Response) => void;
+}
+export type TResponseSuccessJson<T> = TResponse<'ResponseSuccessJson'> & {
+    value: T;
+};
+export type TResponseErrorInternal = TResponse<'ResponseErrorInternal'> & {
+    value?: any;
+};
+

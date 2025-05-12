@@ -4,7 +4,7 @@ import passport from 'passport';
 import { logout } from '../utils/authUtil';
 import { UserWithoutPassword } from '../types';
 import { handleAuthenticatedError } from '../middleware/handleError';
-import { expressHandler } from '../middleware/errorHandler';
+import { expressHandler } from '../middleware/expressHandler';
 
 const router = Router();
 
