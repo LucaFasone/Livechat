@@ -1,20 +1,21 @@
-import type { NextFunction, Response, Request } from 'express';
+import type { Response, Request } from 'express';
 import { Router } from 'express';
 import passport from 'passport';
 import { logout } from '../utils/authUtil';
 import { UserWithoutPassword } from '../types';
 import { handleAuthenticatedError } from '../middleware/handleError';
+import { expressHandler } from '../middleware/errorHandler';
 
 const router = Router();
 
 router.use(passport.authenticate('bearer', { session: false }));
 
-router.get('/me', (req: Request, res: Response) => {
+router.get('/me', expressHandler(async (req: Request, res: Response) => {
     const user = req.user as UserWithoutPassword;
     res.status(200).json(user);
-});
+}));
 
-router.delete('/logout', async (req: Request, res: Response) => {
+router.delete('/logout', expressHandler(async (req: Request, res: Response) => {
     try {
         if (!req.user) {
             throw new Error("User Not Found");
@@ -24,8 +25,8 @@ router.delete('/logout', async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ message: error instanceof Error ? error.message : "Errore nel logout" });
     }
-});
-router.post("/add-user",async (req,res) =>{
+}));
+router.post("/add-user",expressHandler(async (req,res) =>{
     try{
         if(!req.user){
             throw new Error("User Not Found")
@@ -36,7 +37,7 @@ router.post("/add-user",async (req,res) =>{
     }catch(e){
         e instanceof Error ? res.status(401) : res.json(500).json("Errore ")
     }
-})
+}));
 
 router.use(handleAuthenticatedError)
 
