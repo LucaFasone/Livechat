@@ -8,7 +8,15 @@ export type TResponse<T> = {
 export type TResponseSuccessJson<T> = TResponse<'ResponseSuccessJson'> & {
     value: T;
 };
+
 export type TResponseErrorInternal = TResponse<'ResponseErrorInternal'> & {
     value?: any;
 };
 
+export type TResponseErrorAuthorization<T = string> = TResponse<'ResponseErrorAuthorization'> & {
+    value?: T;
+}
+
+export type TResponseCustom<T> = TResponse<'ResponseCustom'> & {
+  value: T;
+};

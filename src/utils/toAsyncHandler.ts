@@ -1,4 +1,4 @@
-export async function toAsyncHandler<T>(fn: () => Promise<T>) {
+export async function toAsyncHandler<T>(fn: () => Promise<T>) { 
     try {
         const result = await fn();
         return [result, null];

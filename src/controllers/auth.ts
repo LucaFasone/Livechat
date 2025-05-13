@@ -1,5 +1,5 @@
-class AuthContoller {
-    static readonly me = () =>{
-        
+export default class AuthController {
+    static readonly register = () => {
+
     }
 }
