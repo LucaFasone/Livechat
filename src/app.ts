@@ -1,13 +1,10 @@
 import express from 'express';
-import { Socket } from 'socket.io';
 import { createServer } from "http";
-import { Server } from "socket.io";
 import passport from 'passport';
 import { authRouter } from './routes/auth';
 import { profileRouter } from './routes/profile';
 import cors from 'cors';
 import coockieParser from 'cookie-parser';
-import { generateRefreshTokenFromCookie } from './middleware/getRefreshTokenFromCookie';
 import { createLog } from './middleware/logger';
 import { bearerStrategy } from './middleware/passport';
 import { createSocketServer } from './config/socket';
@@ -43,3 +40,9 @@ httpServer.listen(3000, () => {
 app.get("/status", (_, res) => {
     res.send("OK")
 })
+app.use((_, res) => {
+    if (res.headersSent) {
+        return;
+    }
+    res.status(404).json({ message: 'Endpoint not found' });
+});

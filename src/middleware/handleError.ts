@@ -2,11 +2,14 @@ import { NextFunction,Response,Request } from "express";
 import { ZodError } from "zod";
 
 export const handleAuthenticatedError = (err: Error, req: Request, res: Response, _: NextFunction) => {
-    res.clearCookie("refreshToken");
+    //res.clearCookie("refreshToken");
     err.message ? res.status(401).json({ message: err.message }) : res.status(500).json({message:"Server Error you are being disconnected"})
 }
 
 export const handleValidationError = (err: Error, req: Request, res: Response, _: NextFunction) => {
+    console.log("FALLBACK MAYBE REMOVE");
+    console.log(err);
+    console.log(req.body);
     if (err instanceof ZodError) {
         const errors = err.errors.map((issue) => ({
             path: issue.path.join('.'),

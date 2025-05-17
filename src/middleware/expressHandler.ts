@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction, response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { TResponse } from "../types/responses";
-import { ResponseErrorInternal } from "../utils/expressResponse";
+import { ResponseBadRequest, ResponseErrorInternal, ResponseZodValidationError } from "../utils/expressResponse";
 import { ne } from "drizzle-orm";
+import { ZodError } from "zod";
 
 export function expressHandler<T, Q, B,>(
     fn: (req: Request<ParamsDictionary, any, B, Q>) => Promise<TResponse<T>> | TResponse<T>
@@ -12,15 +13,17 @@ export function expressHandler<T, Q, B,>(
         try {
             const result = fn(req)
             if (result instanceof Promise) {
-                result.catch((err) =>
-                    ResponseErrorInternal(err))
-                    .then((response) => response.apply(res))
+                result.catch((err) => {
+                    if (err instanceof ZodError) {
+                        return ResponseZodValidationError(err)
+                    }
+                    return ResponseErrorInternal(err)
+                }).then((response) => response.apply(res))
                     .catch((err) => {
                         if (!res.headersSent) {
                             next(err)
                         }
-                    }
-                    )
+                    })
             } else {
                 try {
                     result.apply(res)
@@ -31,11 +34,11 @@ export function expressHandler<T, Q, B,>(
                 }
             }
         } catch (e) {
-            try{
+            try {
                 ResponseErrorInternal(e).apply(res)
             }
-            catch(e){
-                if(!res.headersSent){
+            catch (e) {
+                if (!res.headersSent) {
                     next(e)
                 }
             }

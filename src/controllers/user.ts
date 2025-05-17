@@ -5,18 +5,16 @@ export default class UserController {
     static readonly me = (req: Request) => {
         const user = req.user
         if (!user) {
-            
             return ResponseErrorAuthorization('Unauthorized');
         }
         return ResponseSuccessJson(user)
-
     }
     static readonly logout = ({ user }: Request) => {
         if (!user) {
             return ResponseErrorAuthorization('User not found')
         }
-        return ResponseCustom({message: "User Loggedout"},200,(res)=>{
-            logout(user.id,res)            
+        return ResponseCustom({ message: "User Loggedout" }, 200, (res) => {
+            logout(user.id, res)
         })
     }
 }

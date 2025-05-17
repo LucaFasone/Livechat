@@ -25,6 +25,7 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
             const { id, email } = decodedRefreshToken;
             setRefreshTokenCookie(res, { id: id.toString(), email });
             req.newAccessToken = generateToken({ id: id.toString(), email });
+            
             next();
         } catch (err) {
             res.status(401).json({ message: "Token invalid or missing" });

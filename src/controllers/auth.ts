@@ -21,16 +21,17 @@ export default class AuthController {
     }
 
     static readonly login = async ({ body: { email, password } }: Request) => {
-        if(!email || !password){
+        if (!email || !password) {
             return ResponseBadRequest("Please provide all fields")
         }
         UserRegistrationSchema.omit({ username: true }).parse({ email, password });
         const user = await findFullUserByEmail(email);
-        if(!user){
-            return ResponseErrorAuthorization({message:"User not found"})
+        if (!user) {
+            return ResponseErrorAuthorization({ message: "User not found" })
         }
         user.token = generateToken({ id: user.id, email: user.email });
-        return ResponseSuccessJson({user})
-        
+        return ResponseCustom({ user }, 200,
+            (res) => setRefreshTokenCookie(res, { id: user.id, email: user.email }))
+
     }
 }
