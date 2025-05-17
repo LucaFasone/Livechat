@@ -5,6 +5,7 @@ export default class UserController {
     static readonly me = (req: Request) => {
         const user = req.user
         if (!user) {
+            
             return ResponseErrorAuthorization('Unauthorized');
         }
         return ResponseSuccessJson(user)

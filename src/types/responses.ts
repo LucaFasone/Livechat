@@ -12,7 +12,9 @@ export type TResponseSuccessJson<T> = TResponse<'ResponseSuccessJson'> & {
 export type TResponseErrorInternal = TResponse<'ResponseErrorInternal'> & {
     value?: any;
 };
-
+export type TResponseBadRequest<T> = TResponse<'ResponseBadRequest'> & {
+    value: T;
+};
 export type TResponseErrorAuthorization<T = string> = TResponse<'ResponseErrorAuthorization'> & {
     value?: T;
 }

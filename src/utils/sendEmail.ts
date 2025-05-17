@@ -1,8 +1,3 @@
-import { redisFunctions } from "../db/redis";
-import { UserWithoutPassword } from "../types";
-import { generateResetPasswordToken } from "./authUtil";
-
-
 export const emailTemplate = (username: string, token: string) =>
     `
     <html>

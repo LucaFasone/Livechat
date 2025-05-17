@@ -1,14 +1,15 @@
 import type { RequestHandler } from 'express';
 import { generateToken, setRefreshTokenCookie, verifyToken } from '../utils/authUtil';
 import { getRefreshToken } from '../db/mongodb';
+
 export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, next) => {
     try {
         if (!req.headers.authorization) {
-            res.status(400).json({ error: 'missing authorization header' });
+            res.status(401).json({ error: 'missing authorization header' });
             return;
         }
         const token = req.headers['authorization']?.split(' ')[1];
-        if (token == undefined) {
+        if (!token) {
             throw new Error("Token non presente");
         }
         verifyToken(token);
@@ -26,8 +27,7 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
             req.newAccessToken = generateToken({ id: id.toString(), email });
             next();
         } catch (err) {
-            const error = err instanceof Error ? err : new Error('Errore nella verifica del token');
-            res.status(401).json({ message: error.message });
+            res.status(401).json({ message: "Token invalid or missing" });
             return;
         }
     }

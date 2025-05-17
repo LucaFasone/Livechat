@@ -19,30 +19,11 @@ const generateResetPasswordToken = async (email: string) => {
     return savedToken
 }
 const verifyResetPasswordToken = (token: string) => {
-    try {
-        return jwt.verify(token, resetPasswordKey) as JwtData;
-    } catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
-            throw new Error('Token scaduto');
-        }
-        if (error instanceof jwt.JsonWebTokenError) {
-            throw new Error('Token non valido');
-        }
-        throw new Error('Errore nella verifica del token');
-    }
+    return jwt.verify(token, resetPasswordKey) as JwtData;
 }
 const verifyToken = (token: string, verifyRefresh = false) => {
-    try {
-        return jwt.verify(token, verifyRefresh ? refresKey : secretKey) as JwtData;
-    } catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
-            throw new Error('Token scaduto');
-        }
-        if (error instanceof jwt.JsonWebTokenError) {
-            throw new Error('Token non valido');
-        }
-        throw new Error('Errore nella verifica del token');
-    }
+    return jwt.verify(token, verifyRefresh ? refresKey : secretKey) as JwtData;
+
 };
 
 const hashPassword = async (password: string) => {

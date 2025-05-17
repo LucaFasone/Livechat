@@ -1,7 +1,8 @@
 import { db } from "."
 import { User, UserWithoutPassword } from "../types"
-import { userAllowedToMessage, usersTable } from "./schema"
-import { eq, and } from "drizzle-orm"
+import { generateToken } from "../utils/authUtil";
+import { usersTable } from "./schema"
+import { eq } from "drizzle-orm"
 import { v4 as uuidv4 } from 'uuid';
 
 export const findUserByEmail = async (email: string) => {
@@ -17,8 +18,10 @@ export const findFullUserByEmail = async (email: string) => {
       }
       return res[0] as User;
     });
-  return user
+    delete user?.password
+    return user
 }
+
 export const findUserById = async (id: string) => {
   const user = await db.select().from(usersTable)
     .where(eq(usersTable.id, id))
@@ -35,7 +38,8 @@ export const createUser = async (username: string, password: string, email: stri
   const id = uuidv4()
   const [result] = await db.insert(usersTable).values({ id, username, password, email })
   if (result.affectedRows == 1) {
-    return { id, username, email } as User
+    const token = generateToken({ id, email });
+    return { id, username, email, token } as UserWithoutPassword
   }
   throw new Error("User not created")
 }

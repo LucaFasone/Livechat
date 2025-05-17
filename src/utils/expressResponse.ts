@@ -1,9 +1,18 @@
-import { TResponse, TResponseCustom, TResponseErrorAuthorization, TResponseErrorInternal, TResponseSuccessJson } from "../types/responses";
+import { TResponse, TResponseBadRequest, TResponseCustom, TResponseErrorAuthorization, TResponseErrorInternal, TResponseSuccessJson } from "../types/responses";
 import type { Response } from "express";
 export function ResponseSuccessJson<T>(o: T, status = 200): TResponseSuccessJson<T> {
   return {
     apply: res => res.status(status).json(o),
     kind: 'ResponseSuccessJson',
+    status,
+    value: o,
+  };
+}
+
+export function ResponseBadRequest<T>(o: T, status = 400): TResponseBadRequest<T> {
+  return {
+    apply: res => res.status(status).json(o),
+    kind: 'ResponseBadRequest',
     status,
     value: o,
   };

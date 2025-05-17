@@ -1,15 +1,13 @@
-import type { Response, Request } from 'express';
 import { Router } from 'express';
 import passport from 'passport';
-import { logout } from '../utils/authUtil';
-import { UserWithoutPassword } from '../types';
 import { handleAuthenticatedError } from '../middleware/handleError';
 import { expressHandler } from '../middleware/expressHandler';
 import UserController from '../controllers/user';
+import { generateRefreshTokenFromCookie } from '../middleware/getRefreshTokenFromCookie';
 
 const router = Router();
-
-router.use(passport.authenticate('bearer', { session: false }));
+router.use(generateRefreshTokenFromCookie)
+router.use(passport.authenticate('bearer', { session: false, failWithError:true }));
 
 router.get('/me', expressHandler(UserController.me));
 

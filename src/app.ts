@@ -30,7 +30,6 @@ app.use(cors({
     exposedHeaders: ['Authorization']
 }));
 
-app.use(['/profile'], generateRefreshTokenFromCookie);
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 
