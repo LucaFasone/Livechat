@@ -1,20 +1,7 @@
 import { Router } from "express";
-import passport from "passport";
-import { handleAuthenticatedError } from "../middleware/handleError";
+import { expressHandler } from "../middleware/expressHandler";
+import ChatController from "../controllers/chat";
 
 const router = Router();
-
-router.use(router.use(passport.authenticate('bearer', { session: false })))
-
-router.post("/add", (req,res)=>{
-    const {body:{userToId}} = req
-    
-
-})
-
-
-
-
-router.use(handleAuthenticatedError)
-
-export default Router
+router.post("/add", expressHandler(ChatController.add))
+export { router as chatRouter };

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { TokenModel, TokenType, TokenPasswordModel, TokenPasswordType } from "../types/schema/Tokens";
 import { verifyResetPasswordToken, verifyToken } from "../utils/authUtil";
 import { toAsyncHandler } from "../utils/toAsyncHandler";
+import { ChatModel, ChatType } from "../types/schema/chat";
 
 
 mongoose.connect('mongodb://localhost:27017/livechat');
@@ -20,7 +21,7 @@ export const saveRefreshToken = async (userId: string, token: string) => {
     return tokenDoc ? tokenDoc.token : null
 }
 export const getRefreshToken = async (token: string) => {
-    const [tokenDoc, _] = await toAsyncHandler<TokenType>(() => TokenModel.findOne({token}))
+    const [tokenDoc, _] = await toAsyncHandler<TokenType>(() => TokenModel.findOne({ token }))
     return tokenDoc ? verifyToken(tokenDoc.token, true) : null
 }
 export const deleteRefreshToken = async (userId: string) => {
@@ -39,4 +40,10 @@ export const getResetPasswordToken = async (token: string) => {
 export const deleteResetPasswordToken = async (token: string) => {
     const [tokenDoc, _] = await toAsyncHandler<TokenPasswordType>(() => TokenPasswordModel.findByIdAndDelete(token))
     return tokenDoc ? tokenDoc._id : null
-} 
+}
+
+export const addUsersToReacheable = async (ids: string[], id: string) => {
+    const [chatDoc, _] = await toAsyncHandler<ChatType>(() => ChatModel.findByIdAndUpdate(id, { $addToSet: { users: { $each: ids } } }, { upsert: true, new: true, runValidators: true }))
+    return chatDoc ? chatDoc.users : null
+
+}

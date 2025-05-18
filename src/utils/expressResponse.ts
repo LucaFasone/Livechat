@@ -3,7 +3,7 @@ import { TResponse, TResponseBadRequest, TResponseCustom, TResponseErrorAuthoriz
 import type { Response } from "express";
 export function ResponseSuccessJson<T>(o: T, status = 200): TResponseSuccessJson<T> {
   return {
-    apply: res => res.status(status).json(o),
+    apply: res => res.status(status).json({message:o}),
     kind: 'ResponseSuccessJson',
     status,
     value: o,

@@ -1,8 +1,7 @@
-import { Request, Response, NextFunction, response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { TResponse } from "../types/responses";
-import { ResponseBadRequest, ResponseErrorInternal, ResponseZodValidationError } from "../utils/expressResponse";
-import { ne } from "drizzle-orm";
+import { ResponseErrorInternal, ResponseZodValidationError } from "../utils/expressResponse";
 import { ZodError } from "zod";
 
 export function expressHandler<T, Q, B,>(

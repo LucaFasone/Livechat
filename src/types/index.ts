@@ -18,7 +18,7 @@ export const UserRegistrationSchema = z.object({
 
 
 export interface JwtData extends DefaultJwtPayload {
-    id: string; 
+    id: string;
     email: string;
 }
 
@@ -33,3 +33,4 @@ export type EmailTemplate = {
 export type User = z.infer<typeof UserSchema>;
 export type UserRegistration = z.infer<typeof UserRegistrationSchema>;
 export type UserWithoutPassword = Omit<z.infer<typeof UserSchema>, 'password'>;
+export type Contact = Omit<z.infer<typeof UserSchema>, "password" | "token">

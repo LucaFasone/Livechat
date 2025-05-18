@@ -9,6 +9,10 @@ export const findUserByEmail = async (email: string) => {
   const user = await db.select({ email: usersTable.email, username: usersTable.username, id: usersTable.id }).from(usersTable).where(eq(usersTable.email, email)).then((res) => res.length != 0 ? res[0] : null)
   return user as UserWithoutPassword | null
 }
+export const userExits = async (id: string) => {
+  return await db.select().from(usersTable).where(eq(usersTable.id, id)).then(res => res && res.length > 0)
+
+}
 export const findFullUserByEmail = async (email: string) => {
   const user = await db.select().from(usersTable)
     .where(eq(usersTable.email, email))
@@ -18,8 +22,8 @@ export const findFullUserByEmail = async (email: string) => {
       }
       return res[0] as User;
     });
-    delete user?.password
-    return user
+  delete user?.password
+  return user
 }
 
 export const findUserById = async (id: string) => {
