@@ -7,7 +7,6 @@ import { ChatModel, ChatType } from "../types/schema/chat";
 
 mongoose.connect('mongodb://localhost:27017/livechat');
 
-
 export const saveRefreshToken = async (userId: string, token: string) => {
     const [tokenDoc, _] = await toAsyncHandler<TokenType>(() =>
         TokenModel.findByIdAndUpdate(
