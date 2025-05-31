@@ -15,6 +15,8 @@ export
 export async function callFunction(fn: FunctionName, body: any, method: "GET" | "POST" | "PATCH" | "DELETE") {
     if (isRunningOnRailway()) {
         const url = `${process.env.RAILWAY_STATIC_URL}/api/${functionPaths[fn]}`;
+        console.log(url);
+        
         const res = await fetch(url, {
             method,
             headers: { "Content-Type": "application/json" },
