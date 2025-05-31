@@ -6,7 +6,9 @@ import { ChatModel, ChatType } from "../types/schema/chat";
 import "dotenv/config"
 
 
-mongoose.connect(process.env.MONGODB!);
+mongoose.connect(process.env.MOGODB!)
+    .then(() => console.log("MongoDB connected!"))
+    .catch(err => console.error("MongoDB connection error:", err));
 
 export const saveRefreshToken = async (userId: string, token: string) => {
     const [tokenDoc, _] = await toAsyncHandler<TokenType>(() =>
