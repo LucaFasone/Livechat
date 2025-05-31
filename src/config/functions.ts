@@ -14,9 +14,7 @@ export
 
 export async function callFunction(fn: FunctionName, body: any, method: "GET" | "POST" | "PATCH" | "DELETE") {
     if (isRunningOnRailway()) {
-        const url = `${process.env.RAILWAY_STATIC_URL}/api/${functionPaths[fn]}`;
-        console.log(url);
-        
+        const url = `https://${process.env.RAILWAY_STATIC_URL}/api/${functionPaths[fn]}`;
         const res = await fetch(url, {
             method,
             headers: { "Content-Type": "application/json" },
@@ -25,16 +23,7 @@ export async function callFunction(fn: FunctionName, body: any, method: "GET" | 
         if (!res.ok) throw new Error(`Function error: ${res.statusText}`);
         return await res.json();
     } else {
-        console.log("Importing function from:", `../functions/${functionPaths[fn]}`);
-        const { default: handler } = await import(`../functions/${functionPaths[fn]}`);
-        const request = new Request("http://localhost", {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: body ? JSON.stringify(body) : undefined,
-        });
-
-        const response = await handler(request);
-        return await response.json();
+   
 
     }
 }
