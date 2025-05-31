@@ -11,9 +11,8 @@ export const functionPaths: Record<FunctionName, string> = {
 };
 export
     function isRunningOnRailway() {
-    return !!process.env.RAILWAY_STATIC_URL || !!process.env.RAILWAY_ENVIRONMENT;
+    return !!process.env.RAILWAY_STATIC_URL || !!process.env.RAILWAY_ENVIRONMENT_NAME;  
 }
-
 
 export async function callFunction(fn: FunctionName, body: any, method: "GET" | "POST" | "PATCH" | "DELETE") {
     if (isRunningOnRailway()) {
