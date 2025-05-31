@@ -1,6 +1,5 @@
 export async function getUsers(data: any) {
     console.log(data);
-    
     return data;
 }
 

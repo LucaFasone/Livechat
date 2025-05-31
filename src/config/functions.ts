@@ -1,5 +1,3 @@
-import { Request } from "express";
-
 export enum FunctionName {
     GetUsers = "get-users",
     SendNotification = "send-notification",
