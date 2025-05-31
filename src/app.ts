@@ -10,6 +10,7 @@ import { bearerStrategy } from './middleware/passport';
 import { createSocketServer } from './config/socket';
 import { registerSocketHandlers } from './sockets/index';
 import { handleValidationError } from './middleware/handleError';
+import { callFunction, FunctionName } from './config/functions';
 
 
 const app = express()
@@ -37,8 +38,9 @@ httpServer.listen(3000, () => {
     registerSocketHandlers(io);
 });
 
-app.get("/status", (_, res) => {
-    res.send("OK")
+app.get("/status", async (_, res) => {
+      const result = await callFunction(FunctionName.GetUsers, "CIAOOOO", "GET");
+  res.json(result);
 })
 app.use((_, res) => {
     if (res.headersSent) {
