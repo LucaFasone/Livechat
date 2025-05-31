@@ -9,12 +9,12 @@ export const functionPaths: Record<FunctionName, string> = {
 };
 export
     function isRunningOnRailway() {
-    return !!process.env.RAILWAY_STATIC_URL || !!process.env.RAILWAY_ENVIRONMENT_NAME;  
+    return !!process.env.RAILWAY_FUNCTION_URL || !!process.env.RAILWAY_ENVIRONMENT_NAME;  
 }
 
 export async function callFunction(fn: FunctionName, body: any, method: "GET" | "POST" | "PATCH" | "DELETE") {
     if (isRunningOnRailway()) {
-        const url = `https://${process.env.RAILWAY_STATIC_URL}/api/${functionPaths[fn]}`;
+        const url = `https://${process.env.RAILWAY_FUNCTION_URL}/api/${functionPaths[fn]}`;
         const res = await fetch(url, {
             method,
             headers: { "Content-Type": "application/json" },
