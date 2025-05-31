@@ -3,7 +3,7 @@ import { Contact } from "../../types";//use @ instead of ../.../
 
 const chatSchema = new Schema({
     _id: { type: String, required: true },
-    users: { type: Array<Contact>, required: true },
+    users: { type: Array<Number>, required: true },
     updatedAt: { type: Date, default: Date.now, required: false }
 })
 

@@ -3,9 +3,10 @@ import { TokenModel, TokenType, TokenPasswordModel, TokenPasswordType } from "..
 import { verifyResetPasswordToken, verifyToken } from "../utils/authUtil";
 import { toAsyncHandler } from "../utils/toAsyncHandler";
 import { ChatModel, ChatType } from "../types/schema/chat";
+import "dotenv/config"
 
 
-mongoose.connect('mongodb://localhost:27017/livechat');
+mongoose.connect(process.env.MONGODB!);
 
 export const saveRefreshToken = async (userId: string, token: string) => {
     const [tokenDoc, _] = await toAsyncHandler<TokenType>(() =>

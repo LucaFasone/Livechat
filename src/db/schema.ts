@@ -59,7 +59,6 @@ export const userInRoom = mysqlTable('user_in_room', {
     }).onDelete("cascade").onUpdate("cascade"),
 }))
 
-//TODO(IMPORTANT): MOVE THIS TO REDIS ASAP
 
 //maybe its not needed to use a relations function
 // export const messageRelations = relations(messageTable, ({ one, many }) => ({}))
