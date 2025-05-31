@@ -6,7 +6,7 @@ import { ChatModel, ChatType } from "../types/schema/chat";
 import "dotenv/config"
 
 
-mongoose.connect(process.env.MOGODB!)
+mongoose.connect(process.env.MONGODB!)
     .then(() => console.log("MongoDB connected!"))
     .catch(err => console.error("MongoDB connection error:", err));
 
