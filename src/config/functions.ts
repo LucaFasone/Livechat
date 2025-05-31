@@ -20,7 +20,8 @@ export async function callFunction(fn: FunctionName, body: any, method: "GET" | 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
         });
-        if (!res.ok) throw new Error(`Function error: ${res.statusText}`);
+        console.log(res);
+        
         return await res.json();
     } else {
    
