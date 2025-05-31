@@ -39,7 +39,7 @@ httpServer.listen(3000, () => {
 });
 
 app.get("/status", async (_, res) => {
-    const result = await callFunction(FunctionName.GetUsers, { test: "ciaooo" }, "GET");
+    const result = await callFunction(FunctionName.GetUsers, { test: "ciaooo" }, "POST");
     res.json(result);
 })
 app.use((_, res) => {
