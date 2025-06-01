@@ -17,7 +17,7 @@ export function expressHandler<T, Q, B,>(
                         return ResponseZodValidationError(err)
                     }
                     return ResponseErrorInternal(err)
-                }).then((response) => response.apply(res))
+                }).then((response) => response.apply(res)) 
                     .catch((err) => {
                         if (!res.headersSent) {
                             next(err)

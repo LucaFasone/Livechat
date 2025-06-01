@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# Script to prevent committing files with only whitespace changes
+
+# Get list of staged files that are Added (A), Copied (C), or Modified (M)
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$staged_files" ]; then
+  # No files staged, or only deleted files, allow commit
+  exit 0
+fi
+
+files_with_only_whitespace_changes=""
+
+for file in $staged_files; do
+  # Check if the file is binary.
+  # `git diff --cached --numstat "$file"` output for binary is "-       -       filename"
+  if git diff --cached --numstat "$file" | cut -f1-2 | grep -q -- '-	-'; then
+    # It's a binary file, skip it.
+    continue
+  fi
+
+  # Check if there are any *actual* changes when ignoring all whitespace.
+  # `git diff --cached --quiet "$file"`:
+  #   Exits 1 if there are changes, 0 if no changes.
+  # `git diff --cached --ignore-all-space --quiet "$file"`:
+  #   Exits 0 if, after ignoring all whitespace, there are no changes (i.e., inputs are the same).
+  #   Exits 1 if there are still changes after ignoring whitespace.
+
+  has_any_changes_status=$(git diff --cached --quiet "$file"; echo $?)
+  no_changes_when_ignoring_whitespace_status=$(git diff --cached --ignore-all-space --quiet "$file"; echo $?)
+
+  # If has_any_changes_status is NOT 0 (meaning there ARE changes)
+  # AND no_changes_when_ignoring_whitespace_status IS 0 (meaning changes disappear when ignoring whitespace)
+  # then it's a whitespace-only change.
+  if [ "$has_any_changes_status" -ne 0 ] && [ "$no_changes_when_ignoring_whitespace_status" -eq 0 ]; then
+    files_with_only_whitespace_changes="$files_with_only_whitespace_changes $file"
+  fi
+done
+
+if [ -n "$files_with_only_whitespace_changes" ]; then
+  echo "---------------------------------------------------------------------"
+  echo "COMMIT ABORTED: Found files with only whitespace changes."
+  echo "---------------------------------------------------------------------"
+  echo "The following staged files appear to have only whitespace modifications:"
+  # Iterate over files, handling potential spaces in filenames (less likely for this var)
+  echo "$files_with_only_whitespace_changes" | tr ' ' '\n' | while IFS= read -r fwnc; do
+    if [ -n "$fwnc" ]; then # ensure not an empty line
+        echo "  - $fwnc"
+    fi
+  done
+  echo ""
+  echo "To proceed with the commit, please either:"
+  echo "  1. Unstage these files (e.g., 'git reset HEAD -- <file>...')."
+  echo "  2. Add meaningful changes to them."
+  echo "  3. If you are sure you want to commit them as is, use 'git commit --no-verify'."
+  echo "---------------------------------------------------------------------"
+  exit 1
+fi
+
+# If we reach here, all checks passed
+exit 0

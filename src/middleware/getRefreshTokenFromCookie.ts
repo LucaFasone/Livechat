@@ -8,7 +8,12 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
             res.status(401).json({ error: 'missing authorization header' });
             return;
         }
-        const token = req.headers['authorization']?.split(' ')[1];
+        const header = req.headers['authorization']?.split(' ');
+        const token = header[1]
+        if (header[0] !== "Bearer") {
+            res.status(401).json({ error: 'malformatted Bearer' });
+            return;
+        }
         if (!token) {
             throw new Error("Token non presente");
         }
@@ -25,7 +30,7 @@ export const generateRefreshTokenFromCookie: RequestHandler = async (req, res, n
             const { id, email } = decodedRefreshToken;
             setRefreshTokenCookie(res, { id: id.toString(), email });
             req.newAccessToken = generateToken({ id: id.toString(), email });
-            
+
             next();
         } catch (err) {
             res.status(401).json({ message: "Token invalid or missing" });

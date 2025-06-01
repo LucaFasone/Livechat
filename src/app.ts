@@ -1,8 +1,6 @@
 import express from 'express';
 import { createServer } from "http";
 import passport from 'passport';
-import { authRouter } from './routes/auth';
-import { profileRouter } from './routes/profile';
 import cors from 'cors';
 import coockieParser from 'cookie-parser';
 import { createLog } from './middleware/logger';
@@ -10,7 +8,7 @@ import { bearerStrategy } from './middleware/passport';
 import { createSocketServer } from './config/socket';
 import { registerSocketHandlers } from './sockets/index';
 import { handleValidationError } from './middleware/handleError';
-import { callFunction, FunctionName } from './config/functions';
+import { apiRouter } from './routes';
 
 
 const app = express()
@@ -28,10 +26,14 @@ app.use(cors({
     exposedHeaders: ['Authorization']
 }));
 
-app.use("/auth", authRouter);
-app.use("/profile", profileRouter);
+app.use('/api',apiRouter)
 
 app.use(handleValidationError);
+
+app.get('/debug', passport.authenticate('bearer', { session: false }), (req, res) => {
+    console.log('✅ Passport autenticazione riuscita');
+    res.json({ message: 'Autenticazione riuscita!' });
+});
 
 httpServer.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
@@ -39,7 +41,6 @@ httpServer.listen(3000, () => {
 });
 
 app.get("/status", async (_, res) => {
-  
     res.send("OK");
 })
 app.use((_, res) => {
@@ -48,3 +49,4 @@ app.use((_, res) => {
     }
     res.status(404).json({ message: 'Endpoint not found' });
 });
+

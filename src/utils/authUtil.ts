@@ -21,10 +21,10 @@ const generateResetPasswordToken = async (email: string) => {
 const verifyResetPasswordToken = (token: string) => {
     return jwt.verify(token, resetPasswordKey) as JwtData;
 }
-const verifyToken = (token: string, verifyRefresh = false) => {
+const verifyToken = (token: string, verifyRefresh = false): JwtData => {
     return jwt.verify(token, verifyRefresh ? refresKey : secretKey) as JwtData;
-
 };
+
 
 const hashPassword = async (password: string) => {
     const saltRounds = 10;

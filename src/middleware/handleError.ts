@@ -18,7 +18,7 @@ export const handleValidationError = (err: Error, req: Request, res: Response, _
             received: (issue as any).received,
         }));
         res.status(400).json({ message: "Validation error", errors });
-    } 
+    }  
     else if (err instanceof Error){
         res.status(400).json({message: err.message})
     }

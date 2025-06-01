@@ -47,5 +47,8 @@ export const deleteResetPasswordToken = async (token: string) => {
 export const addUsersToReacheable = async (ids: string[], id: string) => {
     const [chatDoc, _] = await toAsyncHandler<ChatType>(() => ChatModel.findByIdAndUpdate(id, { $addToSet: { users: { $each: ids } } }, { upsert: true, new: true, runValidators: true }))
     return chatDoc ? chatDoc.users : null
-
+}
+export const getUsersFromReachable = async (id: string) => {
+    const [chatDoc, _] = await toAsyncHandler<ChatType | null>(() => ChatModel.findById(id).lean())
+    return chatDoc ? chatDoc.users : null
 }
