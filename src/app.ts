@@ -39,8 +39,8 @@ httpServer.listen(3000, () => {
 });
 
 app.get("/status", async (_, res) => {
-    const result = await callFunction(FunctionName.GetUsers, { test: "ciaooo" }, "POST");
-    res.json(result);
+  
+    res.send("OK");
 })
 app.use((_, res) => {
     if (res.headersSent) {

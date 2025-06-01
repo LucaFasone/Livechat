@@ -5,7 +5,8 @@
   "description": "",
   "scripts": {
     "dev": "tsx watch src/app.ts",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migrate": "npx drizzle-kit generate && npx drizzle-kit migrate"
   },
   "keywords": [],
   "author": "",

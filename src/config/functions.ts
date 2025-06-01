@@ -7,8 +7,7 @@ export const functionPaths: Record<FunctionName, string> = {
     [FunctionName.GetUsers]: "get-users",
     [FunctionName.SendNotification]: "send-notification",
 };
-export
-    function isRunningOnRailway() {
+export function isRunningOnRailway() {
     return !!process.env.RAILWAY_FUNCTION_URL || !!process.env.RAILWAY_ENVIRONMENT_NAME;  
 }
 
@@ -20,13 +19,6 @@ export async function callFunction(fn: FunctionName, body: any, method: "GET" | 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
         });
-        console.log(url);
-        
-        console.log(res);
-        
         return await res.json();
-    } else {
-   
-
-    }
+    } 
 }
